@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title }}</title>
+  <style type="text/css">
+    body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantrell, "Helvetica Neue", sans-serif;
+    }
+
+    #app {
+      width: 80%;
+      margin: auto;
+    }
+
+    .solution {
+      border: 1pt solid #ddd;
+      margin: 1em 0 1em 0;
+      border-radius: 1em;
+      padding: 1em;
+      /* box-shadow: 0px 0px 10px 5px #ddd; */
+      box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    dl.info {
+      display: flex;
+      flex-wrap: wrap;
+      margin-block: 0;
+    }
+
+    dl dt {
+      flex: 0 0 auto;
+      color: #777;
+      padding-left: 0.6em;
+      padding-right: 0.4em;
+    }
+
+    dl dd {
+      flex: 0 0 auto;
+      padding-right: 0.6em;
+      margin-left: 0;
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    table tr:hover {
+      background-color: #eee;
+    }
+    
+    td, th {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 0 8px 0 8px;
+    }
+    
+    th {
+      background-color: #ccc;
+    }
+
+    table tr:last-child td:first-child {
+      border-bottom-left-radius: 10px;
+    }
+    
+    table tr:last-child td:last-child {
+      border-bottom-right-radius: 10px;
+    }
+    
+    input[type=text], select {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-top: 25px;
+    }
+
+    a.active {
+      font-weight: bold;
+      color: black;
+    }
+
+    .aligned {
+      font-family: "Roboto Mono", Monaco, consolas, courier, monospace;
+      text-align: center;
+    }
+
+    .T {
+      color: #ff4500;
+      fill: #ff4500;
+    }
+
+    .A {
+      color: #32cd32;
+      fill: #32cd32;
+    }
+
+    .C {
+      color: #1e90ff;
+      fill: #1e90ff;
+    }
+
+    .G {
+      color: #ffa500;
+      fill: #ffa500;
+    }
+
+    .arrow {
+      display: inline-block;
+      vertical-align: middle;
+      width: 0;
+      height: 0;
+      margin-left: 5px;
+      opacity: 0.8;
+    }
+    
+    .arrow.asc {
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 4px solid #fff;
+    }
+    
+    .arrow.dsc {
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid #fff;
+    }
+
+    .label {
+      font-size: 14px;
+    }
+
+    .svg {
+      display: flex;
+      justify-content: center;
+    }
+    .svg div {
+      margin-left: 1em;
+    }
+
+    .interval {
+      fill: #1e90ff;
+      fill-opacity: 0.5;
+      stroke: #1e90ff;
+      stroke-opacity: 0.5;
+      transition: fill .2s ease-in-out;
+    }
+
+    .interval:hover {
+      fill: #b4d8fc;
+      transition: fill .1s ease-in-out;
+    }
+
+    .tooltip {
+      background-color: rgba(255, 255, 255, 0.3);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      /* border: solid #555 1px;
+      border-radius: 5px; */
+      /* box-shadow: 0px 0px 10px 1px #888; */
+      box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+      padding: 5px;
+      position: absolute;
+      opacity: 0;
+    }
+
+    .show {
+      opacity: 1;
+      transition: 0.15s opacity ease;
+    }
+
+    .axis path, .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+    
+    .core-box {
+      fill: rgba(0,0,0,0);
+      stroke: #ae23ae9b;
+      stroke-dasharray: 10,5;
+      stroke-linecap: butt;
+      stroke-width: 2;
+    }
+
+    button.close {
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 0.1em 0.25em;
+      position: absolute;
+      top: 0.2em;
+      right: 0.2em;
+      color: #555;
+      transition: color 0.1s ease-in-out;
+      cursor: pointer;
+      border: none;
+      background-color: transparent;
+      /* border: solid 1px transparent; */
+    }
+
+    button.close:hover {
+      color: #000;
+      transition: color 0.1s ease-in-out;
+      /* background-color: #dddd;
+      transition: background-color 0.2s ease-in-out;
+      border: solid 1px #aaa;
+      border-radius: 0.2em;
+      transition: border 0.2s ease-in-out; */
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="panel">
+      <h1>[[ json.description ]]</h1>
+    </div>
+
+    <div class="solution" v-for="(res, index) in json.results">
+      <dl class="info">
+        <dt>#[[ index + 1 ]]</dt>
+        <dt>Sample</dt> <dd>[[ json.name ]]</dd>
+        <dt>Core sequence</dt> <dd>
+          <div style="display: flex;">
+            <span
+              v-bind:class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
+              v-for="chr in res.leader_core_seq">
+              [[ chr ]]</span>
+          </div>
+        </dd>
+        <dt>Position</dt> <dd>[[ res.leader_core_start + 1 ]]</dd>
+        <dt>TRS-L</dt> <dd>[[ res.TRS_L_start + 1 ]] - [[ res.TRS_L_start + res.TRS_L_len + 1 ]]</dd>
+        <dt>Weight</dt> <dd>[[ res.weight ]]</dd>
+        <template v-if="!res.compact">
+          <dt>Compactness</dt>
+          <dd>
+            [[ res.compact | percentage ]]
+          </dd>
+        </template>
+
+        <dt>#ORFs</dt> <dd>[[ res.n_intervals ]]</dd>
+        <dt v-if="res.missing_ORF.length" >Missing ORFs</dt> <dd>[[ res.missing_ORF | list2string ]]</dd>
+        <dt>Range</dt> <dd>[[ res.body_range_start ]] - [[ res.body_range_start + res.body_range_len ]]</dd>
+      </dl>
+
+      <div class="svg">
+        <div v-bind:id="json.name + '-' + index + '-interval'"></div>
+        <div v-bind:id="json.name + '-' + index + '-logo'"></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th v-for="item in header" style="text-align: center;">
+              [[ item ]]
+            </th>
+            <th class="aligned">
+              <span
+                v-bind:class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
+                v-for="chr in res.TRS_L_seq">[[ chr ]]</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in reverse_bodys[index]">
+            <td>[[ row.ORF ]]</td>
+            <td>[[ row.score ]]</td>
+            <td>[[ row.core_start !== null ? row.core_start + 1 : "" ]]</td>
+            <td>[[ row.core_start !== null ? row.core_start + row.core_len + 1 : "" ]]</td>
+            <td>[[ row.core_len ?? "" ]]</td>
+            <td>[[ row.ORF_start + 1 ]]</td>
+            <td>[[ row.ORF_start + row.ORF_len + 1 ]]</td>
+            <td>[[ row.ORF_len ]]</td>
+            <td class="aligned">
+              <span v-bind:class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
+                v-for="chr in row.align">[[ chr ]]</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tooltip" class="tooltip">
+    <div>
+      <span class="name"></span>
+      <button class='close' onclick="close_tooltip()">&#x2715</button>
+    </div>
+    <span class="range"></span>
+  </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+  function getLetterPath(c) {
+    const letterA = 'm 144.59,56.29 -5,13.27 h -8.48 L 147.55,21 h 7.56 l 16.56,48.53 H 163 l -5.18,-13.27 z m 11.91,-6.9 v 0 l -5.26063,-16.351734 v 0 L 145.89,49.31 v 0 z';
+  
+    const letterG = 'm 171.68,67.39 c -4.78512,1.718575 -9.8258,2.617852 -14.91,2.66 -7.34,0 -13.39,-1.87 -18.15,-6.41 -4.18,-4 -6.77,-10.51 -6.77,-18.07 0.07,-14.47 10,-25.06 26.28,-25.06 4.14408,-0.10062 8.46373,0.858362 12.29968,2.762485 l -2.50841,6.640895 C 164.5434,28.443296 162.68021,27.639533 158,27.76682 c -11.21095,0 -17.09113,8.671212 -17.11382,17.51318 0.0227,10.239742 7.28688,17.060696 16.32382,17.060696 2.63567,0 4.67493,-0.352283 6.66228,-1.499682 l 0,-10.27668 H 155.7 V 44.1 h 16 z';
+  
+    const letterT = 'M 142,30.35 H 129.19 V 21 h 35.93 v 9.33 h -12.83 v 39.2 H 142 Z';
+  
+    const letterC = 'm 168.65,68 c -2.3,1.15 -6.91,2.3 -12.82,2.3 -13.68,0 -24,-8.64 -24,-24.55 0,-15.19 10.3,-25.49 25.35,-25.49 6,0 9.86,1.3 11.52,2.16 l -3.53135,7.131354 c -2.57018,-1.213266 -5.82943,-1.138298 -8.52666,-0.989324 -10.11665,0.168446 -15.99219,6.764662 -16.07641,16.96797 0.16844,9.774423 4.90287,16.814862 16.71287,16.814862 2.83865,0.05714 6.66081,-0.54002 9.30355,-1.241993 z';
+  
+    if (c === "G") {
+      return letterG;
+    } else if (c === "A") {
+      return letterA;
+    } else if (c === "C") {
+      return letterC;
+    } else if (c === "T") {
+      return letterT;
+    }
+    return null;
+  }
+
+  function getLetterBaseTransform(i) {
+    const baseTransform = [];
+    baseTransform[0] = 0;
+    baseTransform[1] = 1;
+  
+    if (i == 'T') { // letter T
+      baseTransform[1] -= 0.0;
+    } else if (i == 'A') { // letter A
+      baseTransform[1] -= 0;
+    } else if (i == 'C') { // letter C
+      baseTransform[1] -= 1;
+    } else if (i == 'G') { // letter G
+      baseTransform[1] -= 1;
+    }
+  
+    return baseTransform;
+  }
+  
+  function calcPathTransform(path, d, yscale, colWidth, offsetY) {
+    const pathBBox = path.getBBox();
+  
+    /**
+     * calculate scale factor based on height
+     * of bounding "rectangle" (imagine a stacked bar chart)
+     */
+    const rectHeight = yscale(d.y1 - d.y0);
+    const rectWidth = colWidth;
+  
+    const scaleY = rectHeight / pathBBox.height;
+    const scaleX = rectWidth / pathBBox.width;
+  
+    // transform to origin so scaling behaves as desired
+    const originX = pathBBox.x;
+    const originY = pathBBox.y;
+  
+    /**
+     * base transform required by font->path conversion
+     * (see getLetterBaseTransform comment)
+     */
+    const baseTransforms = getLetterBaseTransform(d.letter);
+    const baseTransformX = baseTransforms[0];
+    const baseTransformY = baseTransforms[1];
+  
+    // apply scale in reverse to post-scale transforms
+    const postTY = (offsetY - yscale(d.y1) - baseTransformY) / scaleY;
+    const postTX = (-originX - rectWidth / 2 + baseTransformX) / scaleX;
+  
+    // pre-scale transforms
+    const preTX = originX * (1 - scaleX);
+    const preTY = originY * (1 - scaleY);
+  
+    const out = `translate(${preTX},${preTY}) scale(${scaleX},${scaleY}) translate(${postTX},${postTY})`;
+    // const out = `translate(${-originX},${-originY}) scale(${scaleX},${scaleY}) translate(${postTX},${postTY})`;
+  
+    return out;
+  }
+
+  function plot_logo(id, data, box, start) {
+    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    width = 500 - margin.left - margin.right,
+    height = 230 - margin.top - margin.bottom;
+
+    data = Array.from(data[0]).map((_, colIndex) => data.map(row => row[colIndex]));
+
+    data = data.map((d) => {
+      dict = {
+        'G': 0,
+        'A': 0,
+        'C': 0,
+        'T': 0,
+      };
+      d.forEach((c) => {
+        if (c != '-') {
+          dict[c] += 1;
+        }
+      });
+      var count = Array();
+      for (const [key, value] of Object.entries(dict)) {
+        if (value > 0) {
+          count.push({letter: key, bits:value});
+        }
+      }
+      // Sort by bits
+      count.sort((a,b) => (a.bits > b.bits) ? 1 : ((b.bits > a.bits) ? -1 : 0))
+      return count
+    });
+
+    data.forEach(function(d) {
+      var y0 = 0;
+      d.bits = d.map( function( entry ) {
+          return {
+            bits: entry.bits,
+            letter: entry.letter,
+            y0: y0,
+            y1 : y0 += entry.bits
+          }
+        }
+      )
+      d.bitTotal = d.bits[d.bits.length - 1].y1;
+    });
+
+    var x = d3.scaleBand()
+      .domain(data.map((d,i) => i))
+      .range([0, width])
+      .padding(0.1);
+
+    var maxBits = d3.max( data, function( d ) { return d.bitTotal } );
+
+    var y = d3.scaleLinear()
+      .range([0, height])
+      .domain([0, maxBits]);
+
+    var svg = d3.select("#" + id)
+      .append("svg")
+      .attr("class", "svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var xAxis = d3.axisBottom(x)
+      .tickFormat(d => d + start);
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    var column = svg.selectAll(".sequence-column")
+      .data(data)
+      .enter()
+      .append("g")
+      .attr("transform", function(d, i) { return "translate(" + (x(i) + (x.bandwidth() / 2)) + ",0)"; })
+      .attr("class", "sequence-column");
+
+    var offsetY = height - 20;
+
+    column.selectAll("path")
+      .data(d => d.bits)
+      .enter()
+      .append('path')
+      .attr('d', d => getLetterPath(d.letter))
+      .attr('transform', function (d) { return calcPathTransform(this, d, y, x.bandwidth(), offsetY); })
+      .attr("class", d => d.letter );
+
+    svg.append("rect")
+      .attr("x", x(box.start))
+      .attr("y", 0)
+      .attr('width', x(box.len) - x(0))
+      .attr('height', height)
+      .attr("class", "core-box");
+  }
+
+  function plot_interval(id, data) {
+    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    width = 380 - margin.left - margin.right,
+    height = 230 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#" + id)
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("class", "svg")
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+    // Add X axis
+    min_x = d3.min(data, function (d) {return d.start})
+
+    var x = d3.scaleLinear(min_x)
+      .domain([
+        min_x,
+        d3.max(data, function (d) {return d.end;})
+      ])
+      .range([ 0, width]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("text-anchor", "center");
+
+    // Y axis
+    var y = d3.scaleBand()
+      .range([0, height ])
+      .domain(data.map(function(d) { return d.name }))
+      .padding(.1);
+
+    //Bars
+    bars = svg.selectAll("rect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("x", function(d) { return x(d.start); } )
+      .attr("y", function(d) { return y(d.name); })
+      .attr("width", function(d) { return x(d.end - d.start + min_x); })
+      .attr("height", y.bandwidth() )
+      .attr("class", "interval")
+      .on('mouseover', function(e, d) {
+        this.showPopupTimer = setTimeout(showPopup.bind(this), 500, e, d);
+        clearTimeout(this.clearPopupTimer);
+      })
+      .on('mouseout', function(e, d) {
+        clearTimeout(this.showPopupTimer);
+        var tooltip = d3.select('#tooltip');
+        this.clearPopupTimer = setTimeout(close_tooltip, 300, e, d);
+        tooltip.on('mouseover', () => {clearTimeout(this.clearPopupTimer)})
+          .on("mouseout", () => {this.clearPopupTimer = setTimeout(close_tooltip, 300, e, d)});
+        // var tooltip = d3.select('#tooltip')
+        //   .classed('show', false)
+        //   .attr("style", "left: 0; top: 0");
+      });
+
+    svg.selectAll("label")
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("class", "label")
+      .attr("y", function (d) { return y(d.name)+ y.bandwidth() / 2 + 6 })
+      .attr("x", function (d) { return x(d.end) + 3 })
+      .text(function (d) { return d.name });
+  }
+
+  function showPopup(e, d) {
+    var coord = this.getScreenCTM()
+      .translate(+ this.getAttribute("x"), + this.getAttribute("y"));
+    console.log(window.pageYOffset, coord.f, d3.select(this).attr("height"));
+    var tooltip = d3.select('#tooltip')
+      .style("left", (window.pageXOffset + coord.e + parseFloat(d3.select(this).attr("width")) / 2) + "px")
+      .style("top", (window.pageYOffset + coord.f - 50) + "px")
+      .classed('show', true);
+    tooltip.select(".name").text(d.name);
+    tooltip.select(".range").text(`${d.start} - ${d.end}`);
+    //  .html(d.name + "<a class='close'>×</a> <br/> " + d.start + d.end);
+  }
+
+  function close_tooltip() {
+    var popup = document.getElementById("tooltip");
+    popup.classList.remove("show");
+    popup.style = "left: 0; top: 0";
+  }
+
+  const app = new Vue({
+    el: '#app',
+    delimiters: ['[[',']]'],
+    data: {
+      header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
+      json: {
+        "results": [
+          {
+            "leader_core_start": 69,
+            "leader_core_len": 7,
+            "leader_core_seq": "ACGAACT",
+            "TRS_L_start": 64,
+            "TRS_L_len": 19,
+            "body_range_start": 21352,
+            "body_range_len": 8551,
+            "n_intervals": 9,
+            "weight": 79.0,
+            "compact": 0.08349900596421471,
+            "bodys": [
+              {
+                "ORF": "N",
+                "interval_start": 28273,
+                "interval_len": 1258,
+                "weight": 1258,
+                "core_start": 28254,
+                "core_len": 12,
+                "leader_start": 64,
+                "leader_end": 75,
+                "ORF_start": 28273,
+                "ORF_len": 1257,
+                "score": 9,
+                "index": 10,
+                "align": "TCTAAACGAACA-------"
+              },
+              {
+                "ORF": "8",
+                "interval_start": 27893,
+                "interval_len": 364,
+                "weight": 364,
+                "core_start": 27883,
+                "core_len": 16,
+                "leader_start": 65,
+                "leader_end": 80,
+                "ORF_start": 27893,
+                "ORF_len": 363,
+                "score": 10,
+                "index": 9,
+                "align": "-CTAAACGAACATGAAA--"
+              },
+              {
+                "ORF": "7b",
+                "interval_start": 27755,
+                "interval_len": 130,
+                "weight": 130,
+                "core_start": 27484,
+                "core_len": 12,
+                "leader_start": 66,
+                "leader_end": 77,
+                "ORF_start": 27755,
+                "ORF_len": 129,
+                "score": 6,
+                "index": 8,
+                "align": "--TAAAAGAACCTT-----"
+              },
+              {
+                "ORF": "7a",
+                "interval_start": 27393,
+                "interval_len": 362,
+                "weight": 364,
+                "core_start": 27384,
+                "core_len": 17,
+                "leader_start": 66,
+                "leader_end": 82,
+                "ORF_start": 27393,
+                "ORF_len": 363,
+                "score": 11,
+                "index": 7,
+                "align": "--TAAACGAACATGAAAAT"
+              },
+              {
+                "ORF": "6",
+                "interval_start": 27201,
+                "interval_len": 184,
+                "weight": 184,
+                "core_start": 27040,
+                "core_len": 7,
+                "leader_start": 69,
+                "leader_end": 75,
+                "ORF_start": 27201,
+                "ORF_len": 183,
+                "score": 4,
+                "index": 6,
+                "align": "-----ACGAACG-------"
+              },
+              {
+                "ORF": "M",
+                "interval_start": 26522,
+                "interval_len": 667,
+                "weight": 667,
+                "core_start": 26467,
+                "core_len": 12,
+                "leader_start": 64,
+                "leader_end": 75,
+                "ORF_start": 26522,
+                "ORF_len": 666,
+                "score": 12,
+                "index": 5,
+                "align": "TCTAAACGAACT-------"
+              },
+              {
+                "ORF": "E",
+                "interval_start": 26244,
+                "interval_len": 226,
+                "weight": 226,
+                "core_start": 26236,
+                "core_len": 8,
+                "leader_start": 69,
+                "leader_end": 76,
+                "ORF_start": 26244,
+                "ORF_len": 225,
+                "score": 8,
+                "index": 4,
+                "align": "-----ACGAACTT------"
+              },
+              {
+                "ORF": "3a",
+                "interval_start": 25392,
+                "interval_len": 826,
+                "weight": 826,
+                "core_start": 25381,
+                "core_len": 11,
+                "leader_start": 66,
+                "leader_end": 76,
+                "ORF_start": 25392,
+                "ORF_len": 825,
+                "score": 11,
+                "index": 3,
+                "align": "--TAAACGAACTT------"
+              },
+              {
+                "ORF": "S",
+                "interval_start": 21562,
+                "interval_len": 3820,
+                "weight": 3820,
+                "core_start": 21551,
+                "core_len": 11,
+                "leader_start": 65,
+                "leader_end": 75,
+                "ORF_start": 21562,
+                "ORF_len": 3819,
+                "score": 8,
+                "index": 0,
+                "align": "-CTAAACGAACA-------"
+              }
+            ],
+            "total_ORF": ["7b", "S", "E", "7a", "8", "3a", "10", "N", "6", "M"],
+            "recall_ORF": ["7b", "S", "7a", "8", "E", "3a", "N", "6", "M"],
+            "missing_ORF": ["10"],
+            "TRS_L_seq": "TCTAAACGAACTTTAAAAT"
+          },
+          {
+            "leader_core_start": 70,
+            "leader_core_len": 7,
+            "leader_core_seq": "CGAACTT",
+            "TRS_L_start": 64,
+            "TRS_L_len": 19,
+            "body_range_start": 21352,
+            "body_range_len": 8551,
+            "n_intervals": 9,
+            "weight": 73.0,
+            "compact": 0.08349900596421471,
+            "bodys": [
+              {
+                "ORF": "N",
+                "interval_start": 28273,
+                "interval_len": 1258,
+                "weight": 1258,
+                "core_start": 28254,
+                "core_len": 13,
+                "leader_start": 64,
+                "leader_end": 76,
+                "ORF_start": 28273,
+                "ORF_len": 1257,
+                "score": 7,
+                "index": 10,
+                "align": "TCTAAACGAACAA------"
+              },
+              {
+                "ORF": "8",
+                "interval_start": 27893,
+                "interval_len": 364,
+                "weight": 364,
+                "core_start": 27883,
+                "core_len": 16,
+                "leader_start": 65,
+                "leader_end": 80,
+                "ORF_start": 27893,
+                "ORF_len": 363,
+                "score": 10,
+                "index": 9,
+                "align": "-CTAAACGAACATGAAA--"
+              },
+              {
+                "ORF": "7b",
+                "interval_start": 27755,
+                "interval_len": 130,
+                "weight": 130,
+                "core_start": 27484,
+                "core_len": 12,
+                "leader_start": 66,
+                "leader_end": 77,
+                "ORF_start": 27755,
+                "ORF_len": 129,
+                "score": 6,
+                "index": 8,
+                "align": "--TAAAAGAACCTT-----"
+              },
+              {
+                "ORF": "7a",
+                "interval_start": 27393,
+                "interval_len": 362,
+                "weight": 364,
+                "core_start": 27384,
+                "core_len": 17,
+                "leader_start": 66,
+                "leader_end": 82,
+                "ORF_start": 27393,
+                "ORF_len": 363,
+                "score": 11,
+                "index": 7,
+                "align": "--TAAACGAACATGAAAAT"
+              },
+              {
+                "ORF": "6",
+                "interval_start": 27201,
+                "interval_len": 184,
+                "weight": 184,
+                "core_start": 27040,
+                "core_len": 9,
+                "leader_start": 69,
+                "leader_end": 77,
+                "ORF_start": 27201,
+                "ORF_len": 183,
+                "score": 3,
+                "index": 6,
+                "align": "-----ACGAACGCT-----"
+              },
+              {
+                "ORF": "M",
+                "interval_start": 26522,
+                "interval_len": 667,
+                "weight": 667,
+                "core_start": 26467,
+                "core_len": 13,
+                "leader_start": 64,
+                "leader_end": 76,
+                "ORF_start": 26522,
+                "ORF_len": 666,
+                "score": 10,
+                "index": 5,
+                "align": "TCTAAACGAACTA------"
+              },
+              {
+                "ORF": "E",
+                "interval_start": 26244,
+                "interval_len": 226,
+                "weight": 226,
+                "core_start": 26236,
+                "core_len": 8,
+                "leader_start": 69,
+                "leader_end": 76,
+                "ORF_start": 26244,
+                "ORF_len": 225,
+                "score": 8,
+                "index": 4,
+                "align": "-----ACGAACTT------"
+              },
+              {
+                "ORF": "3a",
+                "interval_start": 25392,
+                "interval_len": 826,
+                "weight": 826,
+                "core_start": 25381,
+                "core_len": 11,
+                "leader_start": 66,
+                "leader_end": 76,
+                "ORF_start": 25392,
+                "ORF_len": 825,
+                "score": 11,
+                "index": 3,
+                "align": "--TAAACGAACTT------"
+              },
+              {
+                "ORF": "S",
+                "interval_start": 21562,
+                "interval_len": 3820,
+                "weight": 3820,
+                "core_start": 21551,
+                "core_len": 13,
+                "leader_start": 65,
+                "leader_end": 77,
+                "ORF_start": 21562,
+                "ORF_len": 3819,
+                "score": 7,
+                "index": 0,
+                "align": "-CTAAACGAACAAT-----"
+              }
+            ],
+            "total_ORF": ["7b", "S", "E", "7a", "8", "3a", "10", "N", "6", "M"],
+            "recall_ORF": ["7b", "S", "7a", "8", "E", "3a", "N", "6", "M"],
+            "missing_ORF": ["10"],
+            "TRS_L_seq": "TCTAAACGAACTTTAAAAT"
+          },
+          {
+            "leader_core_start": 66,
+            "leader_core_len": 7,
+            "leader_core_seq": "TAAACGA",
+            "TRS_L_start": 60,
+            "TRS_L_len": 23,
+            "body_range_start": 21352,
+            "body_range_len": 8551,
+            "n_intervals": 9,
+            "weight": 67.0,
+            "compact": 0.10560168401356566,
+            "bodys": [
+              {
+                "ORF": "N",
+                "interval_start": 28273,
+                "interval_len": 1258,
+                "weight": 1258,
+                "core_start": 28254,
+                "core_len": 11,
+                "leader_start": 64,
+                "leader_end": 74,
+                "ORF_start": 28273,
+                "ORF_len": 1257,
+                "score": 11,
+                "index": 12,
+                "align": "----TCTAAACGAAC--------"
+              },
+              {
+                "ORF": "8",
+                "interval_start": 27893,
+                "interval_len": 364,
+                "weight": 364,
+                "core_start": 27883,
+                "core_len": 16,
+                "leader_start": 65,
+                "leader_end": 80,
+                "ORF_start": 27893,
+                "ORF_len": 363,
+                "score": 10,
+                "index": 11,
+                "align": "-----CTAAACGAACATGAAA--"
+              },
+              {
+                "ORF": "7b",
+                "interval_start": 27755,
+                "interval_len": 130,
+                "weight": 130,
+                "core_start": 27484,
+                "core_len": 9,
+                "leader_start": 66,
+                "leader_end": 74,
+                "ORF_start": 27755,
+                "ORF_len": 129,
+                "score": 6,
+                "index": 10,
+                "align": "------TAAAAGAAC--------"
+              },
+              {
+                "ORF": "7a",
+                "interval_start": 27393,
+                "interval_len": 362,
+                "weight": 364,
+                "core_start": 27384,
+                "core_len": 17,
+                "leader_start": 66,
+                "leader_end": 82,
+                "ORF_start": 27393,
+                "ORF_len": 363,
+                "score": 11,
+                "index": 9,
+                "align": "------TAAACGAACATGAAAAT"
+              },
+              {
+                "ORF": "6",
+                "interval_start": 27201,
+                "interval_len": 184,
+                "weight": 184,
+                "core_start": 27015,
+                "core_len": 9,
+                "leader_start": 65,
+                "leader_end": 73,
+                "ORF_start": 27201,
+                "ORF_len": 183,
+                "score": 3,
+                "index": 8,
+                "align": "-----CTAAAGAAA---------"
+              },
+              {
+                "ORF": "M",
+                "interval_start": 26522,
+                "interval_len": 667,
+                "weight": 667,
+                "core_start": 26467,
+                "core_len": 12,
+                "leader_start": 64,
+                "leader_end": 75,
+                "ORF_start": 26522,
+                "ORF_len": 666,
+                "score": 12,
+                "index": 7,
+                "align": "----TCTAAACGAACT-------"
+              },
+              {
+                "ORF": "3a",
+                "interval_start": 25392,
+                "interval_len": 826,
+                "weight": 826,
+                "core_start": 25381,
+                "core_len": 11,
+                "leader_start": 66,
+                "leader_end": 76,
+                "ORF_start": 25392,
+                "ORF_len": 825,
+                "score": 11,
+                "index": 5,
+                "align": "------TAAACGAACTT------"
+              },
+              {
+                "ORF": "3a",
+                "interval_start": 25331,
+                "interval_len": 61,
+                "weight": 115,
+                "core_start": 25286,
+                "core_len": 13,
+                "leader_start": 60,
+                "leader_end": 72,
+                "ORF_start": 25331,
+                "ORF_len": 114,
+                "score": 1,
+                "index": 4,
+                "align": "GTTGTCTCAAGGG----------"
+              },
+              {
+                "ORF": "S",
+                "interval_start": 21535,
+                "interval_len": 3796,
+                "weight": 3847,
+                "core_start": 21485,
+                "core_len": 8,
+                "leader_start": 66,
+                "leader_end": 73,
+                "ORF_start": 21535,
+                "ORF_len": 3846,
+                "score": 2,
+                "index": 0,
+                "align": "------TAAAGGTA---------"
+              }
+            ],
+            "total_ORF": ["7b", "S", "E", "7a", "8", "3a", "10", "N", "6", "M"],
+            "recall_ORF": ["7b", "S", "7a", "8", "3a", "N", "6", "M"],
+            "missing_ORF": ["10", "E"],
+            "TRS_L_seq": "GTTCTCTAAACGAACTTTAAAAT"
+          },
+          {
+            "leader_core_start": 67,
+            "leader_core_len": 7,
+            "leader_core_seq": "AAACGAA",
+            "TRS_L_start": 64,
+            "TRS_L_len": 19,
+            "body_range_start": 21352,
+            "body_range_len": 8551,
+            "n_intervals": 8,
+            "weight": 66.0,
+            "compact": 0.10677113787861069,
+            "bodys": [
+              {
+                "ORF": "N",
+                "interval_start": 28273,
+                "interval_len": 1258,
+                "weight": 1258,
+                "core_start": 28254,
+                "core_len": 11,
+                "leader_start": 64,
+                "leader_end": 74,
+                "ORF_start": 28273,
+                "ORF_len": 1257,
+                "score": 11,
+                "index": 13,
+                "align": "TCTAAACGAAC--------"
+              },
+              {
+                "ORF": "8",
+                "interval_start": 27893,
+                "interval_len": 364,
+                "weight": 364,
+                "core_start": 27883,
+                "core_len": 16,
+                "leader_start": 65,
+                "leader_end": 80,
+                "ORF_start": 27893,
+                "ORF_len": 363,
+                "score": 10,
+                "index": 12,
+                "align": "-CTAAACGAACATGAAA--"
+              },
+              {
+                "ORF": "7b",
+                "interval_start": 27755,
+                "interval_len": 130,
+                "weight": 130,
+                "core_start": 27484,
+                "core_len": 12,
+                "leader_start": 66,
+                "leader_end": 77,
+                "ORF_start": 27755,
+                "ORF_len": 129,
+                "score": 6,
+                "index": 11,
+                "align": "--TAAAAGAACCTT-----"
+              },
+              {
+                "ORF": "7a",
+                "interval_start": 27393,
+                "interval_len": 362,
+                "weight": 364,
+                "core_start": 27384,
+                "core_len": 17,
+                "leader_start": 66,
+                "leader_end": 82,
+                "ORF_start": 27393,
+                "ORF_len": 363,
+                "score": 11,
+                "index": 10,
+                "align": "--TAAACGAACATGAAAAT"
+              },
+              {
+                "ORF": "6",
+                "interval_start": 27201,
+                "interval_len": 184,
+                "weight": 184,
+                "core_start": 27015,
+                "core_len": 9,
+                "leader_start": 65,
+                "leader_end": 73,
+                "ORF_start": 27201,
+                "ORF_len": 183,
+                "score": 3,
+                "index": 9,
+                "align": "-CTAAAGAAA---------"
+              },
+              {
+                "ORF": "M",
+                "interval_start": 26522,
+                "interval_len": 667,
+                "weight": 667,
+                "core_start": 26467,
+                "core_len": 12,
+                "leader_start": 64,
+                "leader_end": 75,
+                "ORF_start": 26522,
+                "ORF_len": 666,
+                "score": 12,
+                "index": 8,
+                "align": "TCTAAACGAACT-------"
+              },
+              {
+                "ORF": "3a",
+                "interval_start": 25392,
+                "interval_len": 826,
+                "weight": 826,
+                "core_start": 25381,
+                "core_len": 11,
+                "leader_start": 66,
+                "leader_end": 76,
+                "ORF_start": 25392,
+                "ORF_len": 825,
+                "score": 11,
+                "index": 7,
+                "align": "--TAAACGAACTT------"
+              },
+              {
+                "ORF": "S",
+                "interval_start": 21535,
+                "interval_len": 3847,
+                "weight": 3847,
+                "core_start": 21485,
+                "core_len": 8,
+                "leader_start": 66,
+                "leader_end": 73,
+                "ORF_start": 21535,
+                "ORF_len": 3846,
+                "score": 2,
+                "index": 0,
+                "align": "--TAAAGGTA---------"
+              }
+            ],
+            "total_ORF": ["7b", "S", "E", "7a", "8", "3a", "10", "N", "6", "M"],
+            "recall_ORF": ["7b", "S", "7a", "8", "3a", "N", "6", "M"],
+            "missing_ORF": ["10", "E"],
+            "TRS_L_seq": "TCTAAACGAACTTTAAAAT"
+          },
+          {
+            "leader_core_start": 68,
+            "leader_core_len": 7,
+            "leader_core_seq": "AACGAAC",
+            "TRS_L_start": 64,
+            "TRS_L_len": 19,
+            "body_range_start": 21352,
+            "body_range_len": 8551,
+            "n_intervals": 8,
+            "weight": 72.0,
+            "compact": 0.10992866331423225,
+            "bodys": [
+              {
+                "ORF": "N",
+                "interval_start": 28273,
+                "interval_len": 1258,
+                "weight": 1258,
+                "core_start": 28254,
+                "core_len": 11,
+                "leader_start": 64,
+                "leader_end": 74,
+                "ORF_start": 28273,
+                "ORF_len": 1257,
+                "score": 11,
+                "index": 12,
+                "align": "TCTAAACGAAC--------"
+              },
+              {
+                "ORF": "8",
+                "interval_start": 27893,
+                "interval_len": 364,
+                "weight": 364,
+                "core_start": 27883,
+                "core_len": 16,
+                "leader_start": 65,
+                "leader_end": 80,
+                "ORF_start": 27893,
+                "ORF_len": 363,
+                "score": 10,
+                "index": 11,
+                "align": "-CTAAACGAACATGAAA--"
+              },
+              {
+                "ORF": "7b",
+                "interval_start": 27755,
+                "interval_len": 130,
+                "weight": 130,
+                "core_start": 27484,
+                "core_len": 12,
+                "leader_start": 66,
+                "leader_end": 77,
+                "ORF_start": 27755,
+                "ORF_len": 129,
+                "score": 6,
+                "index": 10,
+                "align": "--TAAAAGAACCTT-----"
+              },
+              {
+                "ORF": "7a",
+                "interval_start": 27393,
+                "interval_len": 362,
+                "weight": 364,
+                "core_start": 27384,
+                "core_len": 17,
+                "leader_start": 66,
+                "leader_end": 82,
+                "ORF_start": 27393,
+                "ORF_len": 363,
+                "score": 11,
+                "index": 9,
+                "align": "--TAAACGAACATGAAAAT"
+              },
+              {
+                "ORF": "6",
+                "interval_start": 27201,
+                "interval_len": 184,
+                "weight": 184,
+                "core_start": 27015,
+                "core_len": 10,
+                "leader_start": 65,
+                "leader_end": 74,
+                "ORF_start": 27201,
+                "ORF_len": 183,
+                "score": 1,
+                "index": 8,
+                "align": "-CTAAAGAAAT--------"
+              },
+              {
+                "ORF": "M",
+                "interval_start": 26522,
+                "interval_len": 667,
+                "weight": 667,
+                "core_start": 26467,
+                "core_len": 12,
+                "leader_start": 64,
+                "leader_end": 75,
+                "ORF_start": 26522,
+                "ORF_len": 666,
+                "score": 12,
+                "index": 7,
+                "align": "TCTAAACGAACT-------"
+              },
+              {
+                "ORF": "3a",
+                "interval_start": 25392,
+                "interval_len": 826,
+                "weight": 826,
+                "core_start": 25381,
+                "core_len": 11,
+                "leader_start": 66,
+                "leader_end": 76,
+                "ORF_start": 25392,
+                "ORF_len": 825,
+                "score": 11,
+                "index": 5,
+                "align": "--TAAACGAACTT------"
+              },
+              {
+                "ORF": "S",
+                "interval_start": 21562,
+                "interval_len": 3820,
+                "weight": 3820,
+                "core_start": 21551,
+                "core_len": 10,
+                "leader_start": 65,
+                "leader_end": 74,
+                "ORF_start": 21562,
+                "ORF_len": 3819,
+                "score": 10,
+                "index": 0,
+                "align": "-CTAAACGAAC--------"
+              }
+            ],
+            "total_ORF": ["7b", "S", "E", "7a", "8", "3a", "10", "N", "6", "M"],
+            "recall_ORF": ["7b", "S", "7a", "8", "3a", "N", "6", "M"],
+            "missing_ORF": ["10", "E"],
+            "TRS_L_seq": "TCTAAACGAACTTTAAAAT"
+          }
+        ],
+        "name": "NC_045512",
+        "description": "Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome",
+        "genbank": {
+          "S": [21465, 21562],
+          "3a": [25270, 25392],
+          "E": [26185, 26244],
+          "M": [26244, 26522],
+          "6": [26846, 27201],
+          "7a": [27358, 27393],
+          "7b": [27393, 27755],
+          "8": [27824, 27893],
+          "N": [28206, 28273],
+          "10": [29503, 29557]
+        },
+        "ORF1ab": [265, 13480, 13767, 21552]
+      },
+    },
+    methods: {
+      sortBy: function(sortKey) {
+        this.reverse[sortKey] = ! this.reverse[sortKey];
+        this.sortKey = sortKey;
+      },
+    },
+    mounted: function () {
+      for (let index = 0; index < this.intervals.length; index++) {
+        plot_interval(this.json.name + '-' + index + '-interval', this.intervals[index]);
+        plot_logo(this.json.name + '-' + index + '-logo', this.sequences[index], this.boxes[index], this.boxes[index].TRS_L_start);
+      }
+    },
+    computed: {
+      intervals: function () {
+        return Array.from(this.json.results,
+          ({ bodys }) => Array.from(bodys,
+            ({ ORF, ORF_start, ORF_len }) => ({
+              "name": ORF,
+              "start": ORF_start + 1,
+              "end": ORF_start + 1 + ORF_len
+            })
+          ).reverse()
+        )
+      },
+      sequences: function () {
+        return Array.from(
+          this.json.results,
+          ({ bodys }) => Array.from(
+            bodys,
+            ({ align }) => align
+          )
+        )
+      },
+      boxes: function () {
+        return Array.from(
+          this.json.results,
+          ({TRS_L_start, leader_core_start, leader_core_len}) => ({
+            "start": leader_core_start - TRS_L_start,
+            "len": leader_core_len,
+            "TRS_L_start": TRS_L_start + 1
+          })
+        )
+      },
+      reverse_bodys: function () {
+        return Array.from(
+          this.json.results,
+          ({bodys}) => ([
+            {
+              ORF: "1a",
+              score: null,
+              core_start: null,
+              core_len: null,
+              ORF_start: this.json.ORF1ab[0],
+              ORF_len: this.json.ORF1ab[1] - this.json.ORF1ab[0],
+            },
+            {
+              ORF: "1b",
+              score: null,
+              core_start: null,
+              core_len: null,
+              ORF_start: this.json.ORF1ab[2],
+              ORF_len: this.json.ORF1ab[3] - this.json.ORF1ab[2],
+            }
+          ].concat(bodys.slice().reverse()))
+        )
+      }
+    },
+    filters: {
+      capitalize: function(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      },
+      percentage: function(num) {
+        return parseFloat(num).toFixed(2)+"%"
+      },
+      list2string: function(list) {
+        return list.join(", ")
+      }
+    }
+  });
+  // sortedRow() {
+  //  return _.orderBy(this.rows, this.sortKey, this.reverse[this.sortKey] ? 'asc' : 'desc');
+  // }
+</script>
+</html>

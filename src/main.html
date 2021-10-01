@@ -267,7 +267,7 @@
             <td class="aligned"> [[ res.TRS_L_start + 1 ]] - [[ res.TRS_L_start + res.TRS_L_len + 1 ]] </td>
             <td class="aligned"> [[ res.weight ]] </td>
             <td class="aligned"> [[ res.compact | percentage ]] </td>
-            <td class="aligned"> <button id="add_solution_card" @click="add_solution([index, res]); show_plots(index)">Add</button></td>
+            <td class="aligned"> <button id="add_solution_card" @click="add_solution([index, res])">Add</button></td>
           </tr>
         </tbody>
       </table>
@@ -337,8 +337,13 @@
       <div id="json.name + '-' + index + '-slider'">slider</div>
 
       <div class="svg">
-        <div v-bind:id="json.name + '-' + index + '-interval'"></div>
-        <div v-bind:id="json.name + '-' + index + '-logo'"></div>
+        <div v-bind:id="json.name + '-' + index + '-interval'">
+            
+        </div>
+
+        <div v-bind:id="json.name + '-' + index + '-logo'">
+
+        </div>
       </div>
 
       <table>
@@ -562,6 +567,8 @@
       .attr('width', x(box.len) - x(0))
       .attr('height', height)
       .attr("class", "core-box");
+
+      console.log("plot logo finish");
   }
 
   function plot_interval(id, data) {
@@ -570,6 +577,7 @@
     height = 230 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
+    console.log("id" + id);
     var svg = d3.select("#" + id)
       .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -633,6 +641,7 @@
       .attr("y", function (d) { return y(d.name)+ y.bandwidth() / 2 + 6 })
       .attr("x", function (d) { return x(d.end) + 3 })
       .text(function (d) { return d.name });
+    console.log("plot int finish");
   }
 
   function showPopup(e, d) {
@@ -688,11 +697,17 @@
       },
 
       add_solution: function(res) {
-        this.solutions_shown.push(res);
+        for (let i = 0; i < this.solutions_shown.length; i++) {
+          if (this.solutions_shown[i][0] == res[0]) {
+            this.$delete(this.solutions_shown, i);
+          }
+        }
+        this.solutions_shown.unshift(res);
       },
 
       show_plots: function(index) {
         console.log("plotting");
+        console.log(index);
         plot_interval(this.json.name + '-' + index + '-interval', this.intervals[index]);
         plot_logo(this.json.name + '-' + index + '-logo', this.sequences[index], this.boxes[index], this.boxes[index].TRS_L_start);      
       },
@@ -728,7 +743,7 @@
             alert(e);
           }
 
-          this.generate_plots();
+          // this.generate_plots();
         }.bind(this);
 
         fr.readAsText(json_file.item(0));

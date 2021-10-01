@@ -228,7 +228,7 @@
       <h1>[[ json.description ]]</h1>
       <div>
         <input type="file" id="user_file" value="Select a JSON file" /> <br/>
-        <button id="import_json" @click="load_data">Regenerate Visualization</button>
+        <button id="import_json" @click=load_data()>Regenerate Visualization</button>
       </div>
     </div>
     <div class="summary">
@@ -252,6 +252,7 @@
             <th class="aligned"> TRS-L </th>
             <th class="aligned"> Weight </th>
             <th class="aligned"> Compactness </th>
+            <th class="aligned"> Plot </th>
           </tr>
         </thead>
         <tbody>
@@ -266,6 +267,7 @@
             <td class="aligned"> [[ res.TRS_L_start + 1 ]] - [[ res.TRS_L_start + res.TRS_L_len + 1 ]] </td>
             <td class="aligned"> [[ res.weight ]] </td>
             <td class="aligned"> [[ res.compact | percentage ]] </td>
+            <td class="aligned"> <button id="add_solution_card" @click="add_solution([index, res]); show_plots(index)">Add</button></td>
           </tr>
         </tbody>
       </table>
@@ -302,31 +304,34 @@
       </div>
     </div>
 
-    <div class="solution" v-for="(res, index) in json.results">
+    <template>
+    <div class="solution" v-for="(res, index) in solutions_shown"> 
       <dl class="info">
-        <dt>#[[ index + 1 ]]</dt>
+        <dt>#[[ res[0] + 1 ]]</dt>
         <dt>Sample</dt> <dd>[[ json.name ]]</dd>
         <dt>Core sequence</dt> <dd>
           <div style="display: flex;">
             <span
               v-bind:class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
-              v-for="chr in res.leader_core_seq">
+              v-for="chr in res[1].leader_core_seq">
               [[ chr ]]</span>
           </div>
         </dd>
-        <dt>Position</dt> <dd>[[ res.leader_core_start + 1 ]]</dd>
-        <dt>TRS-L</dt> <dd>[[ res.TRS_L_start + 1 ]] - [[ res.TRS_L_start + res.TRS_L_len + 1 ]]</dd>
-        <dt>Weight</dt> <dd>[[ res.weight ]]</dd>
-        <template v-if="!res.compact">
+        <dt>Position</dt> <dd>[[ res[1].leader_core_start + 1 ]]</dd>
+        <dt>TRS-L</dt> <dd>[[ res[1].TRS_L_start + 1 ]] - [[ res[1].TRS_L_start + res[1].TRS_L_len + 1 ]]</dd>
+        <dt>Weight</dt> <dd>[[ res[1].weight ]]</dd>
+        <template v-if="!res[1].compact">
           <dt>Compactness</dt>
           <dd>
-            [[ res.compact | percentage ]]
+            [[ res[1].compact | percentage ]]
           </dd>
         </template>
 
-        <dt>#ORFs</dt> <dd>[[ res.n_intervals ]]</dd>
-        <dt v-if="res.missing_ORF.length" >Missing ORFs</dt> <dd>[[ res.missing_ORF | list2string ]]</dd>
-        <dt>Range</dt> <dd>[[ res.body_range_start ]] - [[ res.body_range_start + res.body_range_len ]]</dd>
+        <dt>#ORFs</dt> <dd>[[ res[1].n_intervals ]]</dd>
+        <dt v-if="res[1].missing_ORF.length" >Missing ORFs</dt> <dd>[[ res[1].missing_ORF | list2string ]]</dd>
+        <dt>Range</dt> <dd>[[ res[1].body_range_start ]] - [[ res[1].body_range_start + res[1].body_range_len ]]</dd>
+        <dt><button id="show_plots" @click=show_plots(res[0])>Show Plots</button></dt>
+        <dt><button id="remove_solution" @click=remove(res[0])>Remove</button></dt>
       </dl>
 
       <div id="json.name + '-' + index + '-slider'">slider</div>
@@ -345,7 +350,7 @@
             <th class="aligned">
               <span
                 v-bind:class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
-                v-for="chr in res.TRS_L_seq">[[ chr ]]</span>
+                v-for="chr in res[1].TRS_L_seq">[[ chr ]]</span>
             </th>
           </tr>
         </thead>
@@ -367,6 +372,7 @@
         </tbody>
       </table>
     </div>
+    </template>
   </div>
 
   <div id="tooltip" class="tooltip">
@@ -662,12 +668,33 @@
           "genbank": {},
           "ORF1ab": [],
           "sequence": ""
-      }
+      },
+      solutions_shown: []
     },
     methods: {
       sortBy: function(sortKey) {
         this.reverse[sortKey] = ! this.reverse[sortKey];
         this.sortKey = sortKey;
+      },
+
+      remove : function(index) {
+        console.log("removing solution div");
+        console.log(index)
+        for (let i = 0; i < this.solutions_shown.length; i++) {
+          if (this.solutions_shown[i][0] == index) {
+            this.$delete(this.solutions_shown, i);
+          }
+        }
+      },
+
+      add_solution: function(res) {
+        this.solutions_shown.push(res);
+      },
+
+      show_plots: function(index) {
+        console.log("plotting");
+        plot_interval(this.json.name + '-' + index + '-interval', this.intervals[index]);
+        plot_logo(this.json.name + '-' + index + '-logo', this.sequences[index], this.boxes[index], this.boxes[index].TRS_L_start);      
       },
 
       generate_plots: function () {
@@ -696,11 +723,12 @@
           try {
             result = JSON.parse(e.target.result);
             this.json = result;
-            this.generate_plots();
+            
           } catch (e) {
             alert(e);
           }
-          
+
+          this.generate_plots();
         }.bind(this);
 
         fr.readAsText(json_file.item(0));

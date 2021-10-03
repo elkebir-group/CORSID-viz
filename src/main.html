@@ -227,8 +227,7 @@
     <div id="panel">
       <h1>[[ json.description ]]</h1>
       <div>
-        <input type="file" id="user_file" value="Select a JSON file" /> <br/>
-        <button id="import_json" @click=load_data()>Regenerate Visualization</button>
+        <input type="file" id="user_file" @change="load_data" />
       </div>
     </div>
     <div class="summary">
@@ -256,8 +255,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(res, index) in json.results" v-if="index>=idxShown&&index<(idxShown+10)">
-            <td class="aligned"> #[[ index + 1 ]] </td>
+          <tr v-for="(res, index) in json.results.slice(idxShown, idxShown+10)">
+            <td class="aligned"> #[[ index + idxShown + 1 ]] </td>
             <td class="aligned"> [[ json.name ]] </td>
             <td class="aligned">
               <span v-bind:class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
@@ -266,7 +265,7 @@
             <td class="aligned"> [[ res.leader_core_start + 1 ]] </td>
             <td class="aligned"> [[ res.TRS_L_start + 1 ]] - [[ res.TRS_L_start + res.TRS_L_len + 1 ]] </td>
             <td class="aligned"> [[ res.weight ]] </td>
-            <td class="aligned"> [[ res.compact | percentage ]] </td>
+            <td class="aligned"> [[ percentage(res.compact) ]] </td>
             <td class="aligned"> <button id="add_solution_card" @click="add_solution([index, res])">Add</button></td>
           </tr>
         </tbody>
@@ -304,7 +303,6 @@
       </div>
     </div>
 
-    <template>
     <div class="solution" v-for="(res, index) in solutions_shown"> 
       <dl class="info">
         <dt>#[[ res[0] + 1 ]]</dt>
@@ -323,25 +321,25 @@
         <template v-if="!res[1].compact">
           <dt>Compactness</dt>
           <dd>
-            [[ res[1].compact | percentage ]]
+            [[ percentage(res[1].compact) ]]
           </dd>
         </template>
 
         <dt>#ORFs</dt> <dd>[[ res[1].n_intervals ]]</dd>
-        <dt v-if="res[1].missing_ORF.length" >Missing ORFs</dt> <dd>[[ res[1].missing_ORF | list2string ]]</dd>
+        <dt v-if="res[1].missing_ORF.length" >Missing ORFs</dt> <dd>[[ list2string(res[1].missing_ORF) ]]</dd>
         <dt>Range</dt> <dd>[[ res[1].body_range_start ]] - [[ res[1].body_range_start + res[1].body_range_len ]]</dd>
         <dt><button id="show_plots" @click=show_plots(res[0])>Show Plots</button></dt>
         <dt><button id="remove_solution" @click=remove(res[0])>Remove</button></dt>
       </dl>
 
-      <div id="json.name + '-' + index + '-slider'">slider</div>
+      <div v-bind:id="json.name + '-' + res[0] + '-slider'">slider</div>
 
       <div class="svg">
-        <div v-bind:id="json.name + '-' + index + '-interval'">
+        <div v-bind:id="json.name + '-' + res[0] + '-interval'">
             
         </div>
 
-        <div v-bind:id="json.name + '-' + index + '-logo'">
+        <div v-bind:id="json.name + '-' + res[0] + '-logo'">
 
         </div>
       </div>
@@ -377,7 +375,6 @@
         </tbody>
       </table>
     </div>
-    </template>
   </div>
 
   <div id="tooltip" class="tooltip">
@@ -389,7 +386,7 @@
   </div>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/d3-simple-slider"></script>
@@ -663,56 +660,59 @@
     popup.style = "left: 0; top: 0";
   }
 
-  const app = new Vue({
-    el: '#app',
-    delimiters: ['[[',']]'],
-    data: {
-      idxShown: 0,
-      idxJump: 0,
-      header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
-      json: {
-          "results": [],
-          "name": "Upload a JSON file",
-          "description": "CORSID Viz",
-          "genbank": {},
-          "ORF1ab": [],
-          "sequence": ""
-      },
-      solutions_shown: []
+  const app = Vue.createApp({
+    compilerOptions: {
+      delimiters: ['[[', ']]'],
     },
+    data: () => ({
+        idxShown: 0,
+        idxJump: 0,
+        header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
+        json: {
+            "results": [],
+            "name": "Upload a JSON file",
+            "description": "CORSID Viz",
+            "genbank": {},
+            "ORF1ab": [],
+            "sequence": ""
+        },
+        solutions_shown: []
+    }),
     methods: {
-      sortBy: function(sortKey) {
+      sortBy(sortKey) {
         this.reverse[sortKey] = ! this.reverse[sortKey];
         this.sortKey = sortKey;
       },
 
-      remove : function(index) {
+      remove(index) {
         console.log("removing solution div");
         console.log(index)
-        for (let i = 0; i < this.solutions_shown.length; i++) {
-          if (this.solutions_shown[i][0] == index) {
-            this.$delete(this.solutions_shown, i);
-          }
-        }
+        // for (let i = 0; i < this.solutions_shown.length; i++) {
+        //   if (this.solutions_shown[i][0] == index) {
+        //     this.$delete(this.solutions_shown, i);
+        //   }
+        // }
+        this.solutions_shown = this.solutions_shown.filter(i => i[0] != index);
       },
 
-      add_solution: function(res) {
-        for (let i = 0; i < this.solutions_shown.length; i++) {
-          if (this.solutions_shown[i][0] == res[0]) {
-            this.$delete(this.solutions_shown, i);
-          }
-        }
+      add_solution(res) {
+        // for (let i = 0; i < this.solutions_shown.length; i++) {
+        //   if (this.solutions_shown[i][0] == res[0]) {
+        //     this.$delete(this.solutions_shown, i);
+        //   }
+        // }
+        this.solutions_shown = this.solutions_shown.filter(i => i[0] != res[0]);
         this.solutions_shown.unshift(res);
       },
 
-      show_plots: function(index) {
+      show_plots(index) {
         console.log("plotting");
         console.log(index);
         plot_interval(this.json.name + '-' + index + '-interval', this.intervals[index]);
         plot_logo(this.json.name + '-' + index + '-logo', this.sequences[index], this.boxes[index], this.boxes[index].TRS_L_start);      
       },
 
-      generate_plots: function () {
+      generate_plots() {
         console.log("generating plots");
         for (let index = 0; index < this.intervals.length; index++) {
             plot_interval(this.json.name + '-' + index + '-interval', this.intervals[index]);
@@ -721,8 +721,8 @@
       },
 
       // method called by "Regenerate Visualization button"
-      load_data: function() {
-        const json_file = document.getElementById("user_file").files;
+      load_data(event) {
+        const json_file = event.target.files;
 
         if (json_file.length != 1) {
           console.log("Did not receive single file")
@@ -748,18 +748,18 @@
 
         fr.readAsText(json_file.item(0));
       },
-      printd3: function(){
+      printd3(){
         console.log(values);
       },
-      addidxShown: function(){
+      addidxShown(){
         if (this.idxShown < this.json.results.length-10)
           this.idxShown += 10;
       },
-      subidxShown: function(){
+      subidxShown(){
         if (this.idxShown >= 10)
           this.idxShown -= 10;
       },
-      jumpto: function(){
+      jumpto(){
         if (isNaN(this.idxJump)){
             alert("please enter a number");
             return;
@@ -769,6 +769,12 @@
             return;
         }
         this.idxShown = Math.round(this.idxJump/10*10 - 1);
+      },
+      percentage(num) {
+        return parseFloat(num).toFixed(2)+"%"
+      },
+      list2string(list) {
+        return list.join(", ")
       }
     },
     mounted: function () {
@@ -778,7 +784,7 @@
       }
     },
     computed: {
-      intervals: function () {
+      intervals() {
         return Array.from(this.json.results,
           ({ bodys }) => Array.from(bodys,
             ({ ORF, ORF_start, ORF_len }) => ({
@@ -789,7 +795,7 @@
           ).reverse()
         )
       },
-      sequences: function () {
+      sequences() {
         return Array.from(
           this.json.results,
           ({ bodys }) => Array.from(
@@ -798,7 +804,7 @@
           )
         )
       },
-      boxes: function () {
+      boxes() {
         return Array.from(
           this.json.results,
           ({TRS_L_start, leader_core_start, leader_core_len}) => ({
@@ -808,7 +814,7 @@
           })
         )
       },
-      reverse_bodys: function () {
+      reverse_bodys() {
         return Array.from(
           this.json.results,
           ({bodys}) => ([
@@ -831,19 +837,9 @@
           ].concat(bodys.slice().reverse()))
         )
       }
-    },
-    filters: {
-      capitalize: function(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-      },
-      percentage: function(num) {
-        return parseFloat(num).toFixed(2)+"%"
-      },
-      list2string: function(list) {
-        return list.join(", ")
-      }
     }
   });
+  app.mount("#app");
   // sortedRow() {
   //  return _.orderBy(this.rows, this.sortKey, this.reverse[this.sortKey] ? 'asc' : 'desc');
   // }

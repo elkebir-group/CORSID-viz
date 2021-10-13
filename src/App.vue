@@ -364,6 +364,7 @@ export default {
       fr.onload = function(e) {
         try {
           result = JSON.parse(e.target.result);
+          this.solutions_shown = [];
           this.json = result;
           
         } catch (e) {

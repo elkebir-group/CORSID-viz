@@ -27,7 +27,7 @@
       <dt>Range</dt> <dd>{{ res[1].body_range_start }} - {{ res[1].body_range_start + res[1].body_range_len }}</dd>
       <!-- <dt><button id="remove_solution" @click="$emit('remove-solution', res[0])">Remove</button></dt> -->
     </dl>
-    <i class="fas fa-chart-bar" @click="is_show_plot = !is_show_plot"></i>
+    <!-- <i class="fas fa-chart-bar" @click="is_show_plot = !is_show_plot"></i> -->
     <span class="close">
       <i class="fas fa-times" @click="$emit('remove-solution', res[0])"></i>
     </span>
@@ -103,7 +103,7 @@ export default {
     box: Object,
   },
   data: () => ({
-    is_show_plot: false,
+    is_show_plot: true,
   }),
   methods: {
     percentage(num) {

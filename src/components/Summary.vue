@@ -39,7 +39,11 @@
             <td class="aligned"> {{ res.leader_core_start + 1 }} </td>
             <td class="aligned"> {{ res.TRS_L_start + 1 }} - {{ res.TRS_L_start + res.TRS_L_len + 1 }} </td>
             <td class="aligned"> {{ res.weight }} </td>
-            <td class="aligned"> {{ percentage((1.0-res.compact)*100) }} </td>
+            <percentage
+              :id="index"
+              :percentage="percentage"
+              :percentage_number="((1.0-res.compact)*100)"
+            />
             <td class="aligned">
               <button 
                 id="add_solution_card"
@@ -63,7 +67,10 @@
 </template>
 
 <script>
+import Percentage from './Percentage.vue'
+
 export default {
+  components: { Percentage },
   name: "Summary",
   props: {
     name: String,

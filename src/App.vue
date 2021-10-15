@@ -22,6 +22,8 @@
       :sequences="sequences[res[0]]"
       :box="boxes[res[0]]"
       @remove-solution="remove_solution($event)"
+      @move-up="move_up($event)"
+      @move-down="move_down($event)"
     />
   </div>
 </template>
@@ -344,9 +346,30 @@ export default {
       console.log(res);
       this.solutions_shown = this.solutions_shown.filter(i => i[0] !== res[0]);
       this.solutions_shown.unshift(res);
+      console.log("solutions_shown array: ", this.solutions_shown)
     },
     remove_solution(index) {
       this.solutions_shown = this.solutions_shown.filter(i => i[0] != index);
+    },
+    move_down(solution) {
+      // only move if index is valid and not the last item
+      var index = this.solutions_shown.indexOf(solution)
+      
+      if (index < this.solutions_shown.length - 1 && index != -1) {
+        var temp = this.solutions_shown[index + 1]
+        this.solutions_shown[index + 1] = this.solutions_shown[index]
+        this.solutions_shown[index] = temp;
+      }
+    },
+    move_up(solution) {
+      // only move if index is valid and not the first item
+      var index = this.solutions_shown.indexOf(solution)
+
+      if (index > 0 && index != -1) {
+        var temp = this.solutions_shown[index];
+        this.solutions_shown[index] = this.solutions_shown[index - 1]
+        this.solutions_shown[index - 1] = temp;
+      };
     },
     load_data(event) {
       const json_file = event.target.files;

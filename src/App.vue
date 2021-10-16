@@ -4,12 +4,17 @@
       :name="json.name"
       :results="json.results"
       :sequence="json.sequence"
+      :summarydata="summary_data"
       :idxShown="idxShown"
-      :idxJump="idxJump"
+      :currentSort="currentSort"
+      :currentSortDir="currentSortDir"
+      @sort="sort"
       @load-data="load_data($event)"
       @add-solution="add_solution($event)"
       @add-idx-shown="add_idx_shown"
       @sub-idx-shown="sub_idx_shown"
+      @jumpto="jumpto"
+      ref="Summary"
     />
     <Solution
       v-for="(res, index) in solutions_shown"
@@ -34,7 +39,8 @@ export default {
   name: 'App',
   data: () => ({
     idxShown: 0,
-    idxJump: 0,
+    currentSort: 'idx',
+    currentSortDir: 'asc',
     header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
     json: {
         "results": [
@@ -376,13 +382,31 @@ export default {
 
       fr.readAsText(json_file.item(0));
     },
-    add_idx_shown(){
+    add_idx_shown() {
       if (this.idxShown < this.json.results.length-10)
         this.idxShown += 10;
     },
-    sub_idx_shown(){
+    sub_idx_shown() {
       if (this.idxShown >= 10)
         this.idxShown -= 10;
+    },
+    jumpto(n) {
+      if (isNaN(n)){
+          alert("please enter a number");
+          return;
+      }
+      if (n < 1 || n > Math.ceil(this.json.results.length/10)){
+          alert("index out of range");
+          return;
+      }
+      this.idxShown = (n-1)*10;
+    },
+    sort(s) {
+      if(s === this.currentSort) {
+        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+      }
+      this.currentSort = s;
+      this.$refs.Summary.icon();
     },
   },
   computed: {
@@ -438,6 +462,20 @@ export default {
           bodys,
           ({ align }) => align
         )
+      )
+    },
+    summary_data() {
+      return Array.from(this.json.results, 
+        ({leader_core_seq,leader_core_start,TRS_L_start,TRS_L_len,weight,compact}, index) => ({
+          "idx": index+1,
+          "sample": this.json.name,
+          "core_seq": leader_core_seq,
+          "pos": leader_core_start + 1,
+          "trs_l_start": TRS_L_start + 1,
+          "trs_l_end": TRS_L_start + TRS_L_len + 1,
+          "weight": weight,
+          "compact": compact
+        })
       )
     },
   },

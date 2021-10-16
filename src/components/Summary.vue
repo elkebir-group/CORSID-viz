@@ -41,7 +41,11 @@
             <td class="aligned"> {{ res.pos }} </td>
             <td class="aligned"> {{ res.trs_l_start }} - {{ res.trs_l_end }} </td>
             <td class="aligned"> {{ parseFloat(res.weight).toFixed(3) }} </td>
-            <td class="aligned"> {{ percentage((1.0-res.compact)*100) }} </td>
+            <percentage
+              :id="index"
+              :percentage="percentage"
+              :percentage_number="((1.0-res.compact)*100)"
+            />
             <td class="aligned">
               <button 
                 id="add_solution_card"
@@ -65,8 +69,10 @@
 
 <script>
 import * as d3 from 'd3';
+import Percentage from './Percentage.vue'
 
 export default {
+  components: { Percentage },
   name: "Summary",
   data() {
     return {

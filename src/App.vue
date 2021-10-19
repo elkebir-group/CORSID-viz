@@ -497,7 +497,7 @@ export default {
           "trs_l_start": TRS_L_start + 1,
           "trs_l_end": TRS_L_start + TRS_L_len + 1,
           "weight": weight,
-          "compact": compact
+          "compact": ((1.0-compact)*100)
         })
       )
     },

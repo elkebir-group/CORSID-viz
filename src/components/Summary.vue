@@ -44,7 +44,7 @@
             <percentage
               :id="index"
               :percentage="percentage"
-              :percentage_number="((1.0-res.compact)*100)"
+              :percentage_number="res.compact"
             />
             <td class="aligned">
               <button 

@@ -554,7 +554,7 @@ table {
 }
 
 table tr:hover {
-  background-color: #eee;
+  background: rgba(228, 228, 228, 0.5);
 }
 
 td, th {

@@ -28,6 +28,11 @@
       <!-- <dt><button id="remove_solution" @click="$emit('remove-solution', res[0])">Remove</button></dt> -->
     </dl>
     <!-- <i class="fas fa-chart-bar" @click="is_show_plot = !is_show_plot"></i> -->
+    
+    <i class="fas fa-arrow-up" @click="$emit('move-up', res)"></i>
+    
+    <i class="fas fa-arrow-down" @click="$emit('move-down', res)"></i>
+    
     <span class="close">
       <i class="fas fa-times" @click="$emit('remove-solution', res[0])"></i>
     </span>

@@ -4,12 +4,17 @@
       :name="json.name"
       :results="json.results"
       :sequence="json.sequence"
+      :summarydata="summary_data"
       :idxShown="idxShown"
-      :idxJump="idxJump"
+      :currentSort="currentSort"
+      :currentSortDir="currentSortDir"
+      @sort="sort"
       @load-data="load_data($event)"
       @add-solution="add_solution($event)"
       @add-idx-shown="add_idx_shown"
       @sub-idx-shown="sub_idx_shown"
+      @jumpto="jumpto"
+      ref="Summary"
     />
     <Solution
       v-for="(res, index) in solutions_shown"
@@ -22,6 +27,8 @@
       :sequences="sequences[res[0]]"
       :box="boxes[res[0]]"
       @remove-solution="remove_solution($event)"
+      @move-up="move_up($event)"
+      @move-down="move_down($event)"
     />
   </div>
 </template>
@@ -34,7 +41,8 @@ export default {
   name: 'App',
   data: () => ({
     idxShown: 0,
-    idxJump: 0,
+    currentSort: 'idx',
+    currentSortDir: 'asc',
     header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
     json: {
         "results": [
@@ -344,9 +352,30 @@ export default {
       console.log(res);
       this.solutions_shown = this.solutions_shown.filter(i => i[0] !== res[0]);
       this.solutions_shown.unshift(res);
+      console.log("solutions_shown array: ", this.solutions_shown)
     },
     remove_solution(index) {
       this.solutions_shown = this.solutions_shown.filter(i => i[0] != index);
+    },
+    move_down(solution) {
+      // only move if index is valid and not the last item
+      var index = this.solutions_shown.indexOf(solution)
+      
+      if (index < this.solutions_shown.length - 1 && index != -1) {
+        var temp = this.solutions_shown[index + 1]
+        this.solutions_shown[index + 1] = this.solutions_shown[index]
+        this.solutions_shown[index] = temp;
+      }
+    },
+    move_up(solution) {
+      // only move if index is valid and not the first item
+      var index = this.solutions_shown.indexOf(solution)
+
+      if (index > 0 && index != -1) {
+        var temp = this.solutions_shown[index];
+        this.solutions_shown[index] = this.solutions_shown[index - 1]
+        this.solutions_shown[index - 1] = temp;
+      };
     },
     load_data(event) {
       const json_file = event.target.files;
@@ -376,13 +405,31 @@ export default {
 
       fr.readAsText(json_file.item(0));
     },
-    add_idx_shown(){
+    add_idx_shown() {
       if (this.idxShown < this.json.results.length-10)
         this.idxShown += 10;
     },
-    sub_idx_shown(){
+    sub_idx_shown() {
       if (this.idxShown >= 10)
         this.idxShown -= 10;
+    },
+    jumpto(n) {
+      if (isNaN(n)){
+          alert("please enter a number");
+          return;
+      }
+      if (n < 1 || n > Math.ceil(this.json.results.length/10)){
+          alert("index out of range");
+          return;
+      }
+      this.idxShown = (n-1)*10;
+    },
+    sort(s) {
+      if(s === this.currentSort) {
+        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+      }
+      this.currentSort = s;
+      this.$refs.Summary.icon();
     },
   },
   computed: {
@@ -442,6 +489,20 @@ export default {
         )
       )
     },
+    summary_data() {
+      return Array.from(this.json.results, 
+        ({leader_core_seq,leader_core_start,TRS_L_start,TRS_L_len,weight,compact}, index) => ({
+          "idx": index+1,
+          "sample": this.json.name,
+          "core_seq": leader_core_seq,
+          "pos": leader_core_start + 1,
+          "trs_l_start": TRS_L_start + 1,
+          "trs_l_end": TRS_L_start + TRS_L_len + 1,
+          "weight": weight,
+          "compact": compact
+        })
+      )
+    },
   },
   components: {
     Summary,
@@ -495,7 +556,7 @@ table {
 }
 
 table tr:hover {
-  background-color: #eee;
+  background: rgba(228, 228, 228, 0.5);
 }
 
 td, th {

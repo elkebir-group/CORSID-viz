@@ -52,6 +52,7 @@
     <table>
       <thead>
         <tr>
+          <th> </th>
           <th :key="item" v-for="item in header" style="text-align: center;">
             {{ item }}
           </th>
@@ -66,6 +67,9 @@
       </thead>
       <tbody>
         <tr :key="row.ORF_start" v-for="row in reverse_bodys">
+          <td>{{ row.check }}
+            <button type="button">Click Me!</button>
+            </td>
           <td>{{ row.ORF }}</td>
           <td>{{ row.score }}</td>
           <td>{{ row.core_start !== null ? row.core_start + 1 : "" }}</td>

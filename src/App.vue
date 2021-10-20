@@ -413,6 +413,7 @@ export default {
         this.json.results,
         ({bodys}) => ([
           {
+            check: null,
             ORF: "1a",
             score: null,
             core_start: null,
@@ -421,6 +422,7 @@ export default {
             ORF_len: this.json.ORF1ab[1] - this.json.ORF1ab[0],
           },
           {
+            check: null,
             ORF: "1b",
             score: null,
             core_start: null,

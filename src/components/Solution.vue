@@ -1,7 +1,8 @@
 <template>
   <div class="solution">
-    <dl class="info">
-      <dt>#{{ res[0] + 1 }}</dt>
+    <div style="width: 20%; float:left">
+      <dt>#{{ res[0] + 1 }}</dt> 
+      <br/>
       <dt>Sample</dt> <dd>{{ name }}</dd>
       <dt>Core sequence</dt> <dd>
         <div style="display: flex;">
@@ -25,34 +26,40 @@
       <dt>#ORFs</dt> <dd>{{ res[1].n_intervals }}</dd>
       <dt v-if="res[1].missing_ORF.length" >Missing ORFs</dt> <dd>{{ res[1].missing_ORF.join(", ") }}</dd>
       <dt>Range</dt> <dd>{{ res[1].body_range_start }} - {{ res[1].body_range_start + res[1].body_range_len }}</dd>
-      <!-- <dt><button id="remove_solution" @click="$emit('remove-solution', res[0])">Remove</button></dt> -->
-    </dl>
-    <!-- <i class="fas fa-chart-bar" @click="is_show_plot = !is_show_plot"></i> -->
-    
-    <i class="fas fa-arrow-up" @click="$emit('move-up', res)"></i>
-    
-    <i class="fas fa-arrow-down" @click="$emit('move-down', res)"></i>
-    
-    <span class="close">
-      <i class="fas fa-times" @click="$emit('remove-solution', res[0])"></i>
-    </span>
+    </div>
 
-    <div class="svg" v-if="is_show_plot">
-      <div :id="name + '-' + res[0] + '-interval'">
-        <Interval
-          :id="name + '-' + res[0] + '-interval'"
-          :start=0
-          :intervals="intervals"
-        />
-      </div>
-      <div :id="name + '-' + res[0] + '-logo'">
-        <SeqLogoPlot
-          :id="name + '-' + res[0] + '-seq'"
-          :sequences="sequences"
-          :box="box"
-        />
+    <div style="width: 80%; float:right">
+      <!-- #right content in there -->
+      <span class="top_corner">
+        <i class="fas fa-arrow-up" @click="$emit('move-up', res)"></i>
+      
+        <i class="fas fa-arrow-down" @click="$emit('move-down', res)"></i>
+        
+        <span class="close">
+          <i class="fas fa-times" @click="$emit('remove-solution', res[0])"></i>
+        </span>
+      </span> 
+      <br/>
+      <div class="svg" v-if="is_show_plot">
+        <div :id="name + '-' + res[0] + '-interval'">
+          <Interval
+            :id="name + '-' + res[0] + '-interval'"
+            :start=0
+            :intervals="intervals"
+          />
+        </div>
+        <div :id="name + '-' + res[0] + '-logo'">
+          <SeqLogoPlot
+            :id="name + '-' + res[0] + '-seq'"
+            :sequences="sequences"
+            :box="box"
+          />
+        </div>
       </div>
     </div>
+    
+    
+
 
     <table>
       <thead>
@@ -124,6 +131,7 @@ export default {
 
 <style scoped>
 .solution {
+  position: relative;
   border: 1pt solid #ddd;
   margin: 1em 0 1em 0;
   border-radius: 1em;
@@ -136,16 +144,19 @@ dl.info {
   display: flex;
   flex-wrap: wrap;
   margin-block: 0;
+  padding: 0;
+  margin: 0;
 }
 
-dl dt {
+dt {
+  float: left;
   flex: 0 0 auto;
   color: #777;
   padding-left: 0.6em;
   padding-right: 0.4em;
 }
 
-dl dd {
+dd {
   flex: 0 0 auto;
   padding-right: 0.6em;
   margin-left: 0;
@@ -166,5 +177,11 @@ dl dd {
 
 .svg {
   display: flex;
+}
+
+.top_corner {
+  position: absolute;
+  top:10px;
+  right:20px;
 }
 </style>

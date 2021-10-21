@@ -25,6 +25,8 @@
             <th id="weight" @click="$emit('sort', 'weight')"> Weight </th>
             <th id="compact" @click="$emit('sort', 'compact')"> Compactness </th>
             <th id="plot"> Plot </th>
+            <th id="compare"> Compare </th>
+
           </tr>
         </thead>
         <tbody>
@@ -51,6 +53,12 @@
                 id="add_solution_card"
                 @click="$emit('add-solution', [res.idx-1, results[res.idx-1]])">
                 Add
+              </button>
+            </td>
+            <td>
+              <button
+                @click="$emit('show-as-compare', res.idx)">
+                Compare
               </button>
             </td>
           </tr>

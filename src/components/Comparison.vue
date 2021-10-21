@@ -29,7 +29,11 @@
     </div>
 
     <div style="width: 80%; float:right">
-      <!-- #right content in there -->
+      <span class="top_corner">
+        <span class="close">
+          <i class="fas fa-times" @click="$emit('remove-comparison')"></i>
+        </span>
+      </span> 
       <br/>
       <div class="svg" v-if="is_show_plot">
         <div :id="name + '-' + res[0] + '-interval'">

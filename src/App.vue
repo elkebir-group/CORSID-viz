@@ -56,7 +56,7 @@ export default {
   name: 'App',
   data: () => ({
     idxShown: 0,
-    staticIdx: 0,
+    staticIdx: -1,
     currentSort: 'idx',
     currentSortDir: 'asc',
     header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],

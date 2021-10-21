@@ -16,6 +16,18 @@
       @jumpto="jumpto"
       ref="Summary"
     />
+
+    <Comparison
+    :key="json.results[staticIdx]"
+    :res="[staticIdx, json.results[staticIdx]]"
+    :name="json.name"
+    :header="header"
+    :reverse_bodys="reverse_bodys[staticIdx]"
+    :intervals="intervals[staticIdx]"
+    :sequences="sequences[staticIdx]"
+    :box="boxes[staticIdx]"
+    />
+
     <Solution
       v-for="(res, index) in solutions_shown"
       :key="index"
@@ -36,11 +48,13 @@
 <script>
 import Summary from './components/Summary.vue'
 import Solution from './components/Solution.vue'
+import Comparison from './components/Comparison.vue'
 
 export default {
   name: 'App',
   data: () => ({
     idxShown: 0,
+    staticIdx: 0,
     currentSort: 'idx',
     currentSortDir: 'asc',
     header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
@@ -349,10 +363,10 @@ export default {
   }),
   methods: {
     add_solution(res) {
-      console.log(res);
+      console.log("res: ", res);
       this.solutions_shown = this.solutions_shown.filter(i => i[0] !== res[0]);
       this.solutions_shown.unshift(res);
-      console.log("solutions_shown array: ", this.solutions_shown)
+      // console.log("solutions_shown array: ", this.solutions_shown)
     },
     remove_solution(index) {
       this.solutions_shown = this.solutions_shown.filter(i => i[0] != index);
@@ -504,7 +518,8 @@ export default {
   },
   components: {
     Summary,
-    Solution
+    Solution,
+    Comparison
   }
 }
 </script>

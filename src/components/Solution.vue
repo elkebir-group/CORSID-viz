@@ -101,7 +101,6 @@
         </tr>
       </tbody>
     </table>
-    <p> {{selectedIDX}} </p>
   </div>
 </template>
 
@@ -131,13 +130,26 @@ export default {
     },
     download(filename) {
       let text = "";
+      this.selectedIDX.sort();
       for (let i = 0; i < this.selectedIDX.length; i++) {
-        let var1 = this.reverse_bodys[this.selectedIDX[i]];
-        text += this.full_sequence.slice(var1.ORF_start, var1.ORF_start + var1.ORF_len+3) + '\n';
-        console.log(text);
+        if (this.selectedIDX[i] != 0 && this.selectedIDX[i] != 1) {
+          let var1 = this.reverse_bodys[this.selectedIDX[i]];
+          text += ">" + var1.ORF + "\n";
+          let curr =  this.full_sequence.slice(var1.ORF_start, var1.ORF_start + var1.ORF_len+3) + "\n";
+          let j = 0;
+          let k = 0;
+          while (k+80*j != curr.length) {
+            if (k > 80) {
+              j++;
+              k = 1;
+              text += "\n";
+            }
+            text += curr.charAt(k+80*j);
+            k++;
+          }
+        }
       }
       
-
       var element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
       element.setAttribute('download', filename);

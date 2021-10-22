@@ -40,6 +40,7 @@
       :intervals="intervals[res[0]]"
       :sequences="sequences[res[0]]"
       :box="boxes[res[0]]"
+      :full_sequence="json.sequence"
       @remove-solution="remove_solution($event)"
       @move-up="move_up($event)"
       @move-down="move_down($event)"

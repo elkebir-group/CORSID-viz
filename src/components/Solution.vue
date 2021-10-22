@@ -26,6 +26,8 @@
       <dt>#ORFs</dt> <dd>{{ res[1].n_intervals }}</dd>
       <dt v-if="res[1].missing_ORF.length" >Missing ORFs</dt> <dd>{{ res[1].missing_ORF.join(", ") }}</dd>
       <dt>Range</dt> <dd>{{ res[1].body_range_start }} - {{ res[1].body_range_start + res[1].body_range_len }}</dd>
+      <dt> <div> <button type="submit" @click="download()">Download!</button> </div></dt>
+      
     </div>
 
     <div style="width: 80%; float:right">
@@ -76,10 +78,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr :key="row.ORF_start" v-for="row in reverse_bodys">
+        <tr :key="row.ORF_start" v-for="(row,idx) in reverse_bodys">
           <td>{{ row.check }}
-             <input type="checkbox" id="ORF1">
-             <label for="ORF1"> </label><br>
+             <input type="checkbox" :id="`ORF-${idx}`" :value="idx" v-model="selectedIDX" >
+             <label :for="`ORF-${idx}`"> </label><br>
             </td>
           <td>{{ row.ORF }}</td>
           <td>{{ row.score }}</td>
@@ -99,6 +101,7 @@
         </tr>
       </tbody>
     </table>
+    <p> {{selectedIDX}} </p>
   </div>
 </template>
 
@@ -116,13 +119,35 @@ export default {
     intervals: Array,
     sequences: Array,
     box: Object,
+    full_sequence: Object,
   },
   data: () => ({
     is_show_plot: true,
+    selectedIDX: [],
   }),
   methods: {
     percentage(num) {
       return parseFloat(num).toFixed(2)+"%"
+    },
+    download(filename) {
+      let text = "";
+      for (let i = 0; i < this.selectedIDX.length; i++) {
+        let var1 = this.reverse_bodys[this.selectedIDX[i]];
+        text += this.full_sequence.slice(var1.ORF_start, var1.ORF_start + var1.ORF_len+3) + '\n';
+        console.log(text);
+      }
+      
+
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
     },
   },
   components: {

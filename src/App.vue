@@ -11,11 +11,25 @@
       @sort="sort"
       @load-data="load_data($event)"
       @add-solution="add_solution($event)"
+      @show-as-compare="show_as_compare($event)"
       @add-idx-shown="add_idx_shown"
       @sub-idx-shown="sub_idx_shown"
       @jumpto="jumpto"
       ref="Summary"
     />
+
+    <Comparison v-if="staticIdx > -1"
+    :key="json.results[staticIdx]"
+    :res="[staticIdx, json.results[staticIdx]]"
+    :name="json.name"
+    :header="header"
+    :reverse_bodys="reverse_bodys[staticIdx]"
+    :intervals="intervals[staticIdx]"
+    :sequences="sequences[staticIdx]"
+    :box="boxes[staticIdx]"
+    @remove-comparison="remove_comparison()"
+    />
+
     <Solution
       v-for="(res, index) in solutions_shown"
       :key="index"
@@ -36,11 +50,13 @@
 <script>
 import Summary from './components/Summary.vue'
 import Solution from './components/Solution.vue'
+import Comparison from './components/Comparison.vue'
 
 export default {
   name: 'App',
   data: () => ({
     idxShown: 0,
+    staticIdx: -1,
     currentSort: 'idx',
     currentSortDir: 'asc',
     header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
@@ -349,13 +365,20 @@ export default {
   }),
   methods: {
     add_solution(res) {
-      console.log(res);
+      // console.log("res index: ", res[0]);
       this.solutions_shown = this.solutions_shown.filter(i => i[0] !== res[0]);
       this.solutions_shown.unshift(res);
-      console.log("solutions_shown array: ", this.solutions_shown)
+      // console.log("solutions_shown array: ", this.solutions_shown)
+    },
+    show_as_compare(index) {
+      // console.log("comparison index: ", index)
+      this.staticIdx = index - 1;
     },
     remove_solution(index) {
       this.solutions_shown = this.solutions_shown.filter(i => i[0] != index);
+    },
+    remove_comparison() {
+      this.staticIdx = -1;
     },
     move_down(solution) {
       // only move if index is valid and not the last item
@@ -499,14 +522,15 @@ export default {
           "trs_l_start": TRS_L_start + 1,
           "trs_l_end": TRS_L_start + TRS_L_len + 1,
           "weight": weight,
-          "compact": compact
+          "compact": ((1.0-compact)*100)
         })
       )
     },
   },
   components: {
     Summary,
-    Solution
+    Solution,
+    Comparison
   }
 }
 </script>

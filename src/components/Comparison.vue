@@ -1,9 +1,9 @@
 <template>
-  <div class="solution">
+  <div class="comparison">
     <div style="width: 20%; float:left">
-      <dt>#{{ res[0] + 1 }}</dt> 
+      <dt>Comparison</dt> 
       <br/>
-      <dt>Sample</dt> <dd>{{ name }}</dd>
+      <!-- <dt>Sample</dt> <dd>{{ name }}</dd> -->
       <dt>Core sequence</dt> <dd>
         <div style="display: flex;">
           <span
@@ -29,14 +29,9 @@
     </div>
 
     <div style="width: 80%; float:right">
-      <!-- #right content in there -->
       <span class="top_corner">
-        <i class="fas fa-arrow-up" @click="$emit('move-up', res)"></i>
-      
-        <i class="fas fa-arrow-down" @click="$emit('move-down', res)"></i>
-        
         <span class="close">
-          <i class="fas fa-times" @click="$emit('remove-solution', res[0])"></i>
+          <i class="fas fa-times" @click="$emit('remove-comparison')"></i>
         </span>
       </span> 
       <br/>
@@ -61,8 +56,6 @@
     <table>
       <thead>
         <tr>
-          <th style="text-align: center;"> {{ "Button" }}
-          </th>
           <th :key="item" v-for="item in header" style="text-align: center;">
             {{ item }}
           </th>
@@ -77,10 +70,6 @@
       </thead>
       <tbody>
         <tr :key="row.ORF_start" v-for="row in reverse_bodys">
-          <td>{{ row.check }}
-             <input type="checkbox" id="ORF1">
-             <label for="ORF1"> </label><br>
-            </td>
           <td>{{ row.ORF }}</td>
           <td>{{ row.score }}</td>
           <td>{{ row.core_start !== null ? row.core_start + 1 : "" }}</td>
@@ -107,7 +96,7 @@ import Interval from './Interval.vue'
 import SeqLogoPlot from './SeqLogo.vue'
 
 export default {
-  name: "Solution",
+  name: "Comparison",
   props: {
     res: Object,
     name: String,
@@ -133,7 +122,7 @@ export default {
 </script>
 
 <style scoped>
-.solution {
+.comparison {
   position: relative;
   border: 1pt solid #ddd;
   margin: 1em 0 1em 0;

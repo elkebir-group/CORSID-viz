@@ -1,6 +1,5 @@
 <template>
-    <td 
-        class="aligned">
+    <td>
         <div class="bg" :style="{width: percentage_number+'%'}"></div>
         {{percentage(percentage_number)}}
     </td>
@@ -20,12 +19,11 @@
 </script>
 
 <style scoped>
-    .aligned {
-        font-family: "Roboto Mono", Monaco, consolas, courier, monospace;
+    td {
         text-align: center;
         position: relative;
     }
-    .bg {
+    div {
         position: absolute;
         left: 0;
         top: 0;

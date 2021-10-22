@@ -57,7 +57,8 @@
     <table>
       <thead>
         <tr>
-          <th> </th>
+          <th style="text-align: center;"> {{ "Button" }}
+          </th>
           <th :key="item" v-for="item in header" style="text-align: center;">
             {{ item }}
           </th>
@@ -73,7 +74,8 @@
       <tbody>
         <tr :key="row.ORF_start" v-for="row in reverse_bodys">
           <td>{{ row.check }}
-            <button type="button">Click Me!</button>
+             <input type="checkbox" id="ORF1">
+             <label for="ORF1"> </label><br>
             </td>
           <td>{{ row.ORF }}</td>
           <td>{{ row.score }}</td>

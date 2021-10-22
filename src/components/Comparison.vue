@@ -129,6 +129,7 @@ export default {
   border-radius: 1em;
   padding: 1em;
   /* box-shadow: 0px 0px 10px 5px #ddd; */
+  background-color: #FFFFD1;
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
@@ -155,7 +156,7 @@ dd {
 }
 
 .svg {
-  width: 60%;
+  width: 90%;
   margin: auto;
 }
 

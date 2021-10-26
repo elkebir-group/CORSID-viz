@@ -373,15 +373,29 @@ export default {
       // console.log("solutions_shown array: ", this.solutions_shown)
     },
     write_to_json(index_orfs_tuple) {
+      // console.log("changing json data")
       var index_in_json = index_orfs_tuple[0]
       var index_in_rows = index_orfs_tuple[1] // note this is given in reverse order from reverse_bodys
+      var row_orf_start = index_orfs_tuple[3]
+      var num_rows = this.json.results[index_in_json].bodys.length
+      var new_annotation = index_orfs_tuple[2]
       if (index_in_rows > 1) {
-        var result_to_change = this.json.results[index_in_json]
-        var num_rows = result_to_change.bodys.length
-        var index_to_change = index_in_rows - 2 // - 2 for extra 1a, 1b rows in Solution cards
-        var new_annotation = index_orfs_tuple[2]
-        this.json.results[index_in_json].bodys[index_to_change].ORF = new_annotation 
-      }
+        // console.log("orf_start:", row_orf_start)
+        for (var i = 0; i < num_rows; i++) {
+          // console.log(this.json.results[index_in_json].bodys[i].ORF_start)
+          if (row_orf_start == this.json.results[index_in_json].bodys[i].ORF_start) {
+            // console.log("Found, previous: ", this.json.results[index_in_json].bodys.ORF)
+            // console.log("i: ", i)
+            this.json.results[index_in_json].bodys[i].ORF = new_annotation
+          }
+        }
+        // var index_to_change = index_in_rows - 2 // - 2 for extra 1a, 1b rows in Solution cards
+        // var new_annotation = index_orfs_tuple[2]
+        // this.json.results[index_in_json].bodys[index_in_rows].ORF = new_annotation 
+        // console.log("index_to_change: ", index_to_change)
+        // console.log("changed ORF rows", this.json.results[index_in_json].bodys[index_in_rows].ORF)
+        // console.log("changed ORF to_change", this.json.results[index_in_json].bodys[index_to_change].ORF)
+      } 
     },
     show_as_compare(index) {
       // console.log("comparison index: ", index)

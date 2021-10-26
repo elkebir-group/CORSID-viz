@@ -90,7 +90,7 @@
             name="ORF" 
             :placeholder=row.ORF 
             size="1" 
-            @change="$emit('write-to-json', [this.res[0], idx, row.ORF])"></td>
+            @change="$emit('write-to-json', [this.res[0], idx, row.ORF, row.ORF_start])"></td>
           <!-- <td v-else>{{row.ORF}}</td> -->
           <td>{{ row.score }}</td>
           <td>{{ row.core_start !== null ? row.core_start + 1 : "" }}</td>

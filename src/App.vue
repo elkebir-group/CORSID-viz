@@ -41,6 +41,7 @@
       :sequences="sequences[res[0]]"
       :box="boxes[res[0]]"
       :full_sequence="json.sequence"
+      @write-to-json="write_to_json($event)"
       @remove-solution="remove_solution($event)"
       @move-up="move_up($event)"
       @move-down="move_down($event)"
@@ -370,6 +371,17 @@ export default {
       this.solutions_shown = this.solutions_shown.filter(i => i[0] !== res[0]);
       this.solutions_shown.unshift(res);
       // console.log("solutions_shown array: ", this.solutions_shown)
+    },
+    write_to_json(index_orfs_tuple) {
+      var index_in_json = index_orfs_tuple[0]
+      var index_in_rows = index_orfs_tuple[1] // note this is given in reverse order from reverse_bodys
+      if (index_in_rows > 1) {
+        var result_to_change = this.json.results[index_in_json]
+        var num_rows = result_to_change.bodys.length
+        var index_to_change = index_in_rows - 2 // - 2 for extra 1a, 1b rows in Solution cards
+        var new_annotation = index_orfs_tuple[2]
+        this.json.results[index_in_json].bodys[index_to_change].ORF = new_annotation 
+      }
     },
     show_as_compare(index) {
       // console.log("comparison index: ", index)

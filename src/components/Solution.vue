@@ -83,7 +83,15 @@
              <input type="checkbox" :id="`ORF-${idx}`" :value="idx" v-model="selectedIDX" >
              <label :for="`ORF-${idx}`"> </label><br>
             </td>
-          <td>{{ row.ORF }}</td>
+          <!-- <td>{{ row.ORF }}</td> -->
+          <td><input
+            v-model="row.ORF" 
+            type="text" 
+            name="ORF" 
+            :placeholder=row.ORF 
+            size="1" 
+            @change="$emit('write-to-json', [this.res[0], idx, row.ORF])"></td>
+          <!-- <td v-else>{{row.ORF}}</td> -->
           <td>{{ row.score }}</td>
           <td>{{ row.core_start !== null ? row.core_start + 1 : "" }}</td>
           <td>{{ row.core_start !== null ? row.core_start + row.core_len + 1 : "" }}</td>
@@ -203,7 +211,7 @@ dd {
 }
 
 .svg {
-  width: 60%;
+  width: 90%;
   margin: auto;
 }
 

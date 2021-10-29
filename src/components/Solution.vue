@@ -26,7 +26,7 @@
       <dt>#ORFs</dt> <dd>{{ res[1].n_intervals }}</dd>
       <dt v-if="res[1].missing_ORF.length" >Missing ORFs</dt> <dd>{{ res[1].missing_ORF.join(", ") }}</dd>
       <dt>Range</dt> <dd>{{ res[1].body_range_start }} - {{ res[1].body_range_start + res[1].body_range_len }}</dd>
-      <dt> <div> <button type="submit" @click="download()">Download!</button> </div></dt>
+      <dt> <div> <button type="submit" @click="download()">Download FASTA</button> </div></dt>
       
     </div>
 
@@ -63,7 +63,8 @@
     <table>
       <thead>
         <tr>
-          <th style="text-align: center;"> {{ "Button" }}
+          <th style="text-align: center;"> {{ "Check All" }}
+            <input type="checkbox" @click="checkAll()"  id="checkall"/>
           </th>
           <th :key="item" v-for="item in header" style="text-align: center;">
             {{ item }}
@@ -133,6 +134,12 @@ export default {
     selectedIDX: [],
   }),
   methods: {
+    checkAll() {
+      this.selectedIDX = []
+      for (let i = 0; i < this.reverse_bodys.length; i++) {
+        this.selectedIDX.push(i);
+      }
+    },
     percentage(num) {
       return parseFloat(num).toFixed(2)+"%"
     },

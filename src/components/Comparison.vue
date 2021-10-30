@@ -124,13 +124,12 @@ export default {
 <style scoped>
 .comparison {
   position: relative;
-  border: 1pt solid #ddd;
+  /* border: 1pt solid #ddd; */
   margin: 1em 0 1em 0;
   border-radius: 1em;
   padding: 1em;
-  /* box-shadow: 0px 0px 10px 5px #ddd; */
-  background-color: #FFFFD1;
-  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0px 0px 9px 3px #94e1ff7a, 0 0 1px 1px #87d2ed5e;
+  background: linear-gradient(to top, #ffffff, #edfaff);
 }
 
 dl.info {

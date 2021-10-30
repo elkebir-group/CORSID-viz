@@ -1,6 +1,6 @@
 <template>
   <div class="summary">
-    <h2 @click="test">Summary</h2>
+    <h2 @click="test">{{name}}</h2>
 
     <input type="file" id="user_file" @change="$emit('load-data', $event)" />
 
@@ -44,7 +44,6 @@
             <td> {{ res.trs_l_start }} - {{ res.trs_l_end }} </td>
             <td> {{ parseFloat(res.weight).toFixed(3) }} </td>
             <percentage
-              :id="index"
               :percentage="percentage"
               :percentage_number="res.compact"
             />

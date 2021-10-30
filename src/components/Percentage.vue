@@ -9,7 +9,6 @@
     export default {
         name: "Percentage",
         props: {
-            id: Number,
             percentage: Function,
             percentage_number: Number,
         },

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Summary
-      :name="json.name"
+      :name="json.description"
       :results="json.results"
       :sequence="json.sequence"
       :summarydata="summary_data"

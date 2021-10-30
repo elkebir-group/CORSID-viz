@@ -47,7 +47,8 @@ export default {
   }),
   mounted() {
     d3.select(this.$refs.x_axis)
-      .call(d3.axisBottom(this.x_scale).tickFormat(d => d + this.box.TRS_L_start));
+      .call(d3.axisBottom(this.x_scale)
+      .tickFormat(d => !((d + this.box.TRS_L_start) % 5) ? (d + this.box.TRS_L_start) : ""));
   },
   methods: {
     getLetterPath(c) {

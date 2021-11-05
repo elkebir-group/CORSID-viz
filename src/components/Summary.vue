@@ -124,6 +124,7 @@ export default {
   border: 1pt solid #ddd;
   margin: 1em 0 1em 0;
   border-radius: 1em;
+  overflow: auto;
   padding: 1em;
   /* box-shadow: 0px 0px 10px 5px #ddd; */
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);

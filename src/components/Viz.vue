@@ -365,6 +365,14 @@ export default {
     },
     solutions_shown: []
   }),
+  created() {
+    if (this.$route.params["data_url"]){
+      console.log(this.$route.params["data_url"]);
+      fetch(this.$route.params["data_url"])
+        .then(response => response.json())
+        .then(data => (this.json = data));
+    }
+  },
   methods: {
     add_solution(res) {
       // console.log("res index: ", res[0]);

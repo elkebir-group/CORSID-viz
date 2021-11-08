@@ -1,6 +1,6 @@
 <template>
   <div class="summary">
-    <h2 @click="test">Summary</h2>
+    <h2 @click="test">{{name}}</h2>
 
     <input type="file" id="user_file" @change="$emit('load-data', $event)" />
 
@@ -17,20 +17,22 @@
       <table>
         <thead>
           <tr class="summary-table-header">
-            <th id="idx" class="aligned" @click="$emit('sort', 'idx')"> ID <i class="fas fa-sort-amount-down-alt"></i></th>
-            <th id="sample" class="aligned"> Sample </th>
-            <th id="core_seq" class="aligned"> Core Sequence </th>
-            <th id="pos" class="aligned" @click="$emit('sort', 'pos')"> Position </th>
-            <th id="trs_l_start" class="aligned" @click="$emit('sort', 'trs_l_start')"> TRS-L </th>
-            <th id="weight" class="aligned" @click="$emit('sort', 'weight')"> Weight </th>
-            <th id="compact" class="aligned" @click="$emit('sort', 'compact')"> Compactness </th>
-            <th id="plot" class="aligned"> Plot </th>
+            <th id="idx" @click="$emit('sort', 'idx')"> ID <i class="fas fa-sort-amount-down-alt"></i></th>
+            <th id="sample"> Sample </th>
+            <th id="core_seq"> Core Sequence </th>
+            <th id="pos" @click="$emit('sort', 'pos')"> Position </th>
+            <th id="trs_l_start" @click="$emit('sort', 'trs_l_start')"> TRS-L </th>
+            <th id="weight" @click="$emit('sort', 'weight')"> Weight </th>
+            <th id="compact" @click="$emit('sort', 'compact')"> Compactness </th>
+            <th id="plot"> Plot </th>
+            <th id="compare"> Compare </th>
+
           </tr>
         </thead>
         <tbody>
           <tr :key="res.idx" v-for="res in sortedSummaryData.slice(idxShown, idxShown+10)">
-            <td class="aligned"> {{ res.idx }} </td>
-            <td class="aligned"> {{ res.sample }} </td>
+            <td> {{ res.idx }} </td>
+            <td> {{ res.sample }} </td>
             <td class="aligned">
               <span
                 v-for="(chr, idx) in res.core_seq"
@@ -38,19 +40,24 @@
                 :class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
               >{{ chr }}</span>
             </td>
-            <td class="aligned"> {{ res.pos }} </td>
-            <td class="aligned"> {{ res.trs_l_start }} - {{ res.trs_l_end }} </td>
-            <td class="aligned"> {{ parseFloat(res.weight).toFixed(3) }} </td>
+            <td> {{ res.pos }} </td>
+            <td> {{ res.trs_l_start }} - {{ res.trs_l_end }} </td>
+            <td> {{ parseFloat(res.weight).toFixed(3) }} </td>
             <percentage
-              :id="index"
               :percentage="percentage"
               :percentage_number="res.compact"
             />
-            <td class="aligned">
+            <td>
               <button 
                 id="add_solution_card"
                 @click="$emit('add-solution', [res.idx-1, results[res.idx-1]])">
                 Add
+              </button>
+            </td>
+            <td>
+              <button
+                @click="$emit('show-as-compare', res.idx)">
+                Compare
               </button>
             </td>
           </tr>
@@ -117,6 +124,7 @@ export default {
   border: 1pt solid #ddd;
   margin: 1em 0 1em 0;
   border-radius: 1em;
+  overflow: auto;
   padding: 1em;
   /* box-shadow: 0px 0px 10px 5px #ddd; */
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);

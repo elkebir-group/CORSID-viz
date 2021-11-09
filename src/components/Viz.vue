@@ -61,7 +61,7 @@ export default {
     staticIdx: -1,
     currentSort: 'idx',
     currentSortDir: 'asc',
-    header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
+    header: ["ORF", "Score", "Core start", "Core end", "Core len", "ORF start", "ORF end", "ORF len"],
     json: {
         "results": [
           {

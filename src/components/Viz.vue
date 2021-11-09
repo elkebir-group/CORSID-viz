@@ -487,7 +487,6 @@ export default {
         this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
       }
       this.currentSort = s;
-      this.$refs.Summary.icon();
     },
   },
   computed: {

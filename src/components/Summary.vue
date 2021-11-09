@@ -17,13 +17,28 @@
       <table>
         <thead>
           <tr class="summary-table-header">
-            <th id="idx" @click="$emit('sort', 'idx')"> ID <i class="fas fa-sort-amount-down-alt"></i></th>
+            <th id="idx" @click="$emit('sort', 'idx')">
+              ID
+              <i :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
             <th id="sample"> Sample </th>
             <th id="core_seq"> Core Sequence </th>
-            <th id="pos" @click="$emit('sort', 'pos')"> Position </th>
-            <th id="trs_l_start" @click="$emit('sort', 'trs_l_start')"> TRS-L </th>
-            <th id="weight" @click="$emit('sort', 'weight')"> Weight </th>
-            <th id="compact" @click="$emit('sort', 'compact')"> Compactness </th>
+            <th id="pos" @click="$emit('sort', 'pos')">
+              Position
+              <i :class="currentSort === 'pos' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+            <th id="trs_l_start" @click="$emit('sort', 'trs_l_start')">
+              TRS-L
+              <i :class="currentSort === 'trs_l_start' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+            <th id="weight" @click="$emit('sort', 'weight')">
+              Weight
+              <i :class="currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+            <th id="compact" @click="$emit('sort', 'compact')">
+              Compactness
+              <i :class="currentSort === 'compact' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
             <th id="plot"> Plot </th>
             <th id="compare"> Compare </th>
 
@@ -75,7 +90,6 @@
 </template>
 
 <script>
-import * as d3 from 'd3';
 import Percentage from './Percentage.vue'
 
 export default {
@@ -98,11 +112,6 @@ export default {
   methods: {
     percentage(num) {
       return parseFloat(num).toFixed(2)+"%"
-    },
-    icon() {
-      d3.select(".summary-table-header").selectAll("th").select("i").remove();
-      var c = this.$parent.currentSortDir==='asc' ? "fas fa-sort-amount-down-alt":"fas fa-sort-amount-down";
-      d3.select("#"+this.$parent.currentSort).append("i").classed(c, true);
     }
   },
   computed: {
@@ -114,7 +123,10 @@ export default {
         if (a[this.currentSort] > b[this.currentSort]) return 1 * mod;
         return 0;
       })
-    }
+    },
+    class_sorted() {
+      return this.currentSortDir === 'asc' ? "fas fa-sort-up" : "fas fa-sort-down";
+    },
   }
 }
 </script>
@@ -134,5 +146,8 @@ export default {
 }
 td {
   z-index: 10;
+}
+.dim {
+  color: #ccc;
 }
 </style>

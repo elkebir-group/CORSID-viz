@@ -128,10 +128,11 @@ export default {
     intervals: Array,
     sequences: Array,
     box: Object,
-    full_sequence: Object,
+    full_sequence: String,
   },
   data: () => ({
     is_show_plot: true,
+    is_checkall: false,
     selectedIDX: [],
   }),
   methods: {

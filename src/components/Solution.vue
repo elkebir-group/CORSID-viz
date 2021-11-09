@@ -26,7 +26,7 @@
       <dt>#ORFs</dt> <dd>{{ res[1].n_intervals }}</dd>
       <dt v-if="res[1].missing_ORF.length" >Missing ORFs</dt> <dd>{{ res[1].missing_ORF.join(", ") }}</dd>
       <dt>Range</dt> <dd>{{ res[1].body_range_start }} - {{ res[1].body_range_start + res[1].body_range_len }}</dd>
-      <dt> <div> <button type="submit" @click="download()">Download FASTA</button> </div></dt>
+      <dt> <div> <button type="submit" @click="download(name + '.fasta')">Download FASTA</button> </div></dt>
       
     </div>
 
@@ -63,8 +63,9 @@
     <table>
       <thead>
         <tr>
-          <th style="text-align: center;"> {{ "Check All" }}
-            <input type="checkbox" @click="checkAll()"  id="checkall"/>
+          <th style="text-align: center;">
+            All
+            <input type="checkbox" @change="check_all()" v-model="is_checkall"/>
           </th>
           <th :key="item" v-for="item in header" style="text-align: center;">
             {{ item }}
@@ -81,9 +82,9 @@
       <tbody>
         <tr :key="row.ORF_start" v-for="(row,idx) in reverse_bodys">
           <td>{{ row.check }}
-             <input type="checkbox" :id="`ORF-${idx}`" :value="idx" v-model="selectedIDX" >
-             <label :for="`ORF-${idx}`"> </label><br>
-            </td>
+            <input type="checkbox" :id="`ORF-${idx}`" :value="idx" v-model="selectedIDX" >
+            <label :for="`ORF-${idx}`"> </label><br>
+          </td>
           <!-- <td>{{ row.ORF }}</td> -->
           <td><input
             v-model="row.ORF" 
@@ -134,10 +135,11 @@ export default {
     selectedIDX: [],
   }),
   methods: {
-    checkAll() {
-      this.selectedIDX = []
-      for (let i = 0; i < this.reverse_bodys.length; i++) {
-        this.selectedIDX.push(i);
+    check_all() {
+      if (this.is_checkall) {
+        this.selectedIDX = [...Array(this.reverse_bodys.length).keys()];
+      } else {
+        this.selectedIDX = []
       }
     },
     percentage(num) {

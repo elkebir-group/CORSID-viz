@@ -4,15 +4,10 @@
 
     <input type="file" id="user_file" @change="$emit('load-data', $event)" />
 
-    <p id="value-range"></p>
-    <p>
-      <span
-        v-for="(chr, idx) in sequence.slice(0,200)"
-        :key="idx"
-        :class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
-      >{{ chr }}</span>
-    </p>
-    <div id="slider-range"></div>
+    <SlidingWindow 
+      :sequence="sequence"
+      ref="SlidingWindow"
+    />
       
       <table>
         <thead>
@@ -75,16 +70,20 @@
 </template>
 
 <script>
-import * as d3 from 'd3';
-import Percentage from './Percentage.vue'
+import * as d3 from "d3";
+import Percentage from "./Percentage.vue";
+import SlidingWindow from "./SlidingWindow.vue";
 
 export default {
-  components: { Percentage },
+  components: {
+    Percentage,
+    SlidingWindow,
+  },
   name: "Summary",
   data() {
     return {
       idxJump: 0,
-    }
+    };
   },
   props: {
     name: String,
@@ -97,26 +96,31 @@ export default {
   },
   methods: {
     percentage(num) {
-      return parseFloat(num).toFixed(2)+"%"
+      return parseFloat(num).toFixed(2) + "%";
     },
     icon() {
       d3.select(".summary-table-header").selectAll("th").select("i").remove();
-      var c = this.$parent.currentSortDir==='asc' ? "fas fa-sort-amount-down-alt":"fas fa-sort-amount-down";
-      d3.select("#"+this.$parent.currentSort).append("i").classed(c, true);
-    }
+      var c =
+        this.$parent.currentSortDir === "asc"
+          ? "fas fa-sort-amount-down-alt"
+          : "fas fa-sort-amount-down";
+      d3.select("#" + this.$parent.currentSort)
+        .append("i")
+        .classed(c, true);
+    },
   },
   computed: {
     sortedSummaryData() {
-      return this.summarydata.sort((a,b) => {
+      return this.summarydata.sort((a, b) => {
         let mod = 1;
-        if (this.currentSortDir === 'desc') mod = -1;
+        if (this.currentSortDir === "desc") mod = -1;
         if (a[this.currentSort] < b[this.currentSort]) return -1 * mod;
         if (a[this.currentSort] > b[this.currentSort]) return 1 * mod;
         return 0;
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -127,7 +131,8 @@ export default {
   overflow: auto;
   padding: 1em;
   /* box-shadow: 0px 0px 10px 5px #ddd; */
-  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3),
+    0 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 #paging {
   text-align: right;

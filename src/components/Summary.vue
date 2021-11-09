@@ -132,4 +132,7 @@ export default {
 #paging {
   text-align: right;
 }
+td {
+  z-index: 10;
+}
 </style>

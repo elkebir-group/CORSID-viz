@@ -25,7 +25,7 @@
               <i :class="currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'"></i>
             </th>
             <th id="compact" @click="$emit('sort', 'compact')">
-              Compactness
+              Coverage
               <i :class="currentSort === 'compact' ? class_sorted : 'fas fa-sort dim'"></i>
             </th>
             <th id="plot"> Plot </th>

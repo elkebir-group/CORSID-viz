@@ -7,27 +7,39 @@
       <table>
         <thead>
           <tr class="summary-table-header">
-            <th id="idx" @click="$emit('sort', 'idx')">
+            <th id="idx" @click="sort('idx')">
               ID
               <i :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"></i>
             </th>
             <th id="core_seq"> Core Sequence </th>
-            <th id="pos" @click="$emit('sort', 'pos')">
+            <th id="pos" @click="sort('pos')">
               Position
               <i :class="currentSort === 'pos' ? class_sorted : 'fas fa-sort dim'"></i>
             </th>
-            <th id="trs_l_start" @click="$emit('sort', 'trs_l_start')">
+            <th id="trs_l_start" @click="sort('trs_l_start')">
               TRS-L
               <i :class="currentSort === 'trs_l_start' ? class_sorted : 'fas fa-sort dim'"></i>
             </th>
-            <th id="weight" @click="$emit('sort', 'weight')">
-              Weight
-              <i :class="currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'"></i>
-            </th>
-            <th id="compact" @click="$emit('sort', 'compact')">
+            
+            <th id="compact" @click="sort('compact')">
               Coverage
               <i :class="currentSort === 'compact' ? class_sorted : 'fas fa-sort dim'"></i>
             </th>
+
+            <th v-if="is_corsid_a" id="weight" @click="sort('weight')">
+              Weight
+              <i :class="currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+            <th v-else id="score" @click="sort('score')">
+              Score
+              <i :class="currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+
+            <th v-if="!is_corsid_a" id="min_score" @click="sort('min_score')">
+              Min Score
+              <i :class="currentSort === 'min_score' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+
             <th id="plot"> Plot </th>
             <th id="compare"> Compare </th>
 
@@ -45,11 +57,17 @@
             </td>
             <td> {{ res.pos }} </td>
             <td> {{ res.trs_l_start }} - {{ res.trs_l_end }} </td>
-            <td> {{ parseFloat(res.weight).toFixed(3) }} </td>
+            
             <percentage
               :percentage="percentage"
               :percentage_number="res.compact"
             />
+            
+            <td v-if="is_corsid_a"> {{ parseFloat(res.weight).toFixed(0) }} </td>
+            <td v-else> {{ res.score }} </td>
+            
+            <td v-if="!is_corsid_a"> {{ res.min_score }} </td>
+
             <td>
               <button 
                 id="add_solution_card"
@@ -73,7 +91,6 @@
         <input type="text" @keyup.enter="$emit('jumpto',this.idxJump)" v-model="idxJump" placeholder="0" style="width:35px">
         <i class="fas fa-angle-right" @click="$emit('add-idx-shown')"></i>
       </div>
-      
     </div>
 </template>
 
@@ -86,6 +103,8 @@ export default {
   data() {
     return {
       idxJump: 0,
+      currentSort: "idx",
+      currentSortDir: "asc",
     }
   },
   props: {
@@ -94,13 +113,18 @@ export default {
     results: Array,
     summarydata: Array,
     idxShown: Number,
-    currentSort: String,
-    currentSortDir: String,
+    is_corsid_a: Boolean,
   },
   methods: {
     percentage(num) {
       return parseFloat(num).toFixed(2)+"%"
-    }
+    },
+    sort(s) {
+      if(s === this.currentSort) {
+        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+      }
+      this.currentSort = s;
+    },
   },
   computed: {
     sortedSummaryData() {

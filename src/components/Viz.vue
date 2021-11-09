@@ -6,9 +6,7 @@
       :sequence="json.sequence"
       :summarydata="summary_data"
       :idxShown="idxShown"
-      :currentSort="currentSort"
-      :currentSortDir="currentSortDir"
-      @sort="sort"
+      :is_corsid_a="json.is_corsid_a"
       @load-data="load_data($event)"
       @add-solution="add_solution($event)"
       @show-as-compare="show_as_compare($event)"
@@ -59,8 +57,6 @@ export default {
   data: () => ({
     idxShown: 0,
     staticIdx: -1,
-    currentSort: 'idx',
-    currentSortDir: 'asc',
     header: ["ORF", "Score", "Core start", "Core end", "Core len", "ORF start", "ORF end", "ORF len"],
     json: {
         "results": [
@@ -482,12 +478,6 @@ export default {
       }
       this.idxShown = (n-1)*10;
     },
-    sort(s) {
-      if(s === this.currentSort) {
-        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
-      }
-      this.currentSort = s;
-    },
   },
   computed: {
     boxes() {
@@ -548,7 +538,7 @@ export default {
     },
     summary_data() {
       return Array.from(this.json.results, 
-        ({leader_core_seq,leader_core_start,TRS_L_start,TRS_L_len,weight,compact}, index) => ({
+        ({leader_core_seq,leader_core_start,TRS_L_start,TRS_L_len,weight,compact,bodys}, index) => ({
           "idx": index+1,
           "sample": this.json.name,
           "core_seq": leader_core_seq,
@@ -556,6 +546,8 @@ export default {
           "trs_l_start": TRS_L_start + 1,
           "trs_l_end": TRS_L_start + TRS_L_len + 1,
           "weight": weight,
+          "score": bodys.reduce((a, b) => +a + (+b.score || 0), 0),
+          "min_score": bodys.reduce((a, b) => Math.min(a, b.score || Infinity), Infinity),
           "compact": ((1.0-compact)*100)
         })
       )

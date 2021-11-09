@@ -2,9 +2,8 @@
 <div id="app">
     <div class="topnav">
         <router-link to="/">Home</router-link>
-
-    <router-link to="/about">About</router-link>
-    <router-link to="/Viz">Visualization</router-link>
+    <router-link to="/demo">Demo</router-link>
+    <router-link to="/viz">Visualization</router-link>
     </div>
   <!-- route outlet -->
   <!-- component matched by the route will render here -->
@@ -25,6 +24,74 @@ export default {
 </script>
 
 <style>
+body {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantrell, "Helvetica Neue", sans-serif;
+}
+
+#app {
+  width: 80%;
+  margin: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+}
+
+.aligned {
+  font-family: "Roboto Mono", Monaco, consolas, courier, monospace;
+  text-align: center;
+}
+
+.T {
+  color: #ff4500;
+  fill: #ff4500;
+}
+
+.A {
+  color: #32cd32;
+  fill: #32cd32;
+}
+
+.C {
+  color: #1e90ff;
+  fill: #1e90ff;
+}
+
+.G {
+  color: #ffa500;
+  fill: #ffa500;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table tr:hover {
+  background-color: rgba(224, 224, 224, 0.5) !important;
+}
+
+td, th {
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  padding: 0 8px 0 8px;
+}
+
+th {
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  /* background-color: #ccc; */
+}
+
+tbody:last-child {
+  border-bottom: 2px solid #ccc;
+}
+
+tr:nth-child(even) {
+  background-color: #f8f8f8;
+  z-index: -10;
+}
+
 .topnav {
   border-radius: 1em;
   background-color: #13294B;

@@ -61,7 +61,7 @@ export default {
     staticIdx: -1,
     currentSort: 'idx',
     currentSortDir: 'asc',
-    header: ["ORF", "score", "core start", "core end", "core len", "ORF start", "ORF end", "ORF len"],
+    header: ["ORF", "Score", "Core start", "Core end", "Core len", "ORF start", "ORF end", "ORF len"],
     json: {
         "results": [
           {
@@ -365,6 +365,14 @@ export default {
     },
     solutions_shown: []
   }),
+  created() {
+    if (this.$route.params["data_url"]){
+      console.log(this.$route.params["data_url"]);
+      fetch(this.$route.params["data_url"])
+        .then(response => response.json())
+        .then(data => (this.json = data));
+    }
+  },
   methods: {
     add_solution(res) {
       // console.log("res index: ", res[0]);
@@ -479,7 +487,6 @@ export default {
         this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
       }
       this.currentSort = s;
-      this.$refs.Summary.icon();
     },
   },
   computed: {
@@ -562,69 +569,5 @@ export default {
 }
 </script>
 
-<style>
-body {
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantrell, "Helvetica Neue", sans-serif;
-}
-
-#app {
-  width: 80%;
-  margin: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-
-.aligned {
-  font-family: "Roboto Mono", Monaco, consolas, courier, monospace;
-  text-align: center;
-}
-
-.T {
-  color: #ff4500;
-  fill: #ff4500;
-}
-
-.A {
-  color: #32cd32;
-  fill: #32cd32;
-}
-
-.C {
-  color: #1e90ff;
-  fill: #1e90ff;
-}
-
-.G {
-  color: #ffa500;
-  fill: #ffa500;
-}
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-table tr:hover {
-  background: rgba(228, 228, 228, 0.5);
-}
-
-td, th {
-  border: 1px solid #ccc;
-  text-align: center;
-  padding: 0 8px 0 8px;
-}
-
-th {
-  background-color: #ccc;
-}
-
-table tr:last-child td:first-child {
-  border-bottom-left-radius: 10px;
-}
-
-table tr:last-child td:last-child {
-  border-bottom-right-radius: 10px;
-}
+<style scoped>
 </style>

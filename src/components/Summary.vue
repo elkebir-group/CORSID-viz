@@ -12,13 +12,27 @@
       <table>
         <thead>
           <tr class="summary-table-header">
-            <th id="idx" @click="$emit('sort', 'idx')"> ID <i class="fas fa-sort-amount-down-alt"></i></th>
-            <th id="sample"> Sample </th>
+            <th id="idx" @click="$emit('sort', 'idx')">
+              ID
+              <i :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
             <th id="core_seq"> Core Sequence </th>
-            <th id="pos" @click="$emit('sort', 'pos')"> Position </th>
-            <th id="trs_l_start" @click="$emit('sort', 'trs_l_start')"> TRS-L </th>
-            <th id="weight" @click="$emit('sort', 'weight')"> Weight </th>
-            <th id="compact" @click="$emit('sort', 'compact')"> Compactness </th>
+            <th id="pos" @click="$emit('sort', 'pos')">
+              Position
+              <i :class="currentSort === 'pos' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+            <th id="trs_l_start" @click="$emit('sort', 'trs_l_start')">
+              TRS-L
+              <i :class="currentSort === 'trs_l_start' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+            <th id="weight" @click="$emit('sort', 'weight')">
+              Weight
+              <i :class="currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
+            <th id="compact" @click="$emit('sort', 'compact')">
+              Compactness
+              <i :class="currentSort === 'compact' ? class_sorted : 'fas fa-sort dim'"></i>
+            </th>
             <th id="plot"> Plot </th>
             <th id="compare"> Compare </th>
 
@@ -27,7 +41,6 @@
         <tbody>
           <tr :key="res.idx" v-for="res in sortedSummaryData.slice(idxShown, idxShown+10)">
             <td> {{ res.idx }} </td>
-            <td> {{ res.sample }} </td>
             <td class="aligned">
               <span
                 v-for="(chr, idx) in res.core_seq"
@@ -117,10 +130,13 @@ export default {
         if (a[this.currentSort] < b[this.currentSort]) return -1 * mod;
         if (a[this.currentSort] > b[this.currentSort]) return 1 * mod;
         return 0;
-      });
+      })
     },
-  },
-};
+    class_sorted() {
+      return this.currentSortDir === 'asc' ? "fas fa-sort-up" : "fas fa-sort-down";
+    },
+  }
+}
 </script>
 
 <style scoped>
@@ -136,5 +152,14 @@ export default {
 }
 #paging {
   text-align: right;
+}
+td {
+  z-index: 10;
+}
+.dim {
+  color: #ccc;
+}
+input {
+  margin-bottom: 1em;
 }
 </style>

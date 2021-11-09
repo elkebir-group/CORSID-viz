@@ -4,16 +4,6 @@
 
     <input type="file" id="user_file" @change="$emit('load-data', $event)" />
 
-    <p id="value-range"></p>
-    <p>
-      <span
-        v-for="(chr, idx) in sequence.slice(0,200)"
-        :key="idx"
-        :class="{A: chr=='A', T: chr=='T', C: chr=='C', G: chr=='G', }"
-      >{{ chr }}</span>
-    </p>
-    <div id="slider-range"></div>
-      
       <table>
         <thead>
           <tr class="summary-table-header">
@@ -21,7 +11,6 @@
               ID
               <i :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"></i>
             </th>
-            <th id="sample"> Sample </th>
             <th id="core_seq"> Core Sequence </th>
             <th id="pos" @click="$emit('sort', 'pos')">
               Position
@@ -47,7 +36,6 @@
         <tbody>
           <tr :key="res.idx" v-for="res in sortedSummaryData.slice(idxShown, idxShown+10)">
             <td> {{ res.idx }} </td>
-            <td> {{ res.sample }} </td>
             <td class="aligned">
               <span
                 v-for="(chr, idx) in res.core_seq"
@@ -149,5 +137,8 @@ td {
 }
 .dim {
   color: #ccc;
+}
+input {
+  margin-bottom: 1em;
 }
 </style>

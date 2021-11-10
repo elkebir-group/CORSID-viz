@@ -1,5 +1,7 @@
 <template>
 <div>
+  <h2>Welcome to the CORSID Visualization Tool</h2>
+  <p>In this demo we show 468 samples used in the analysis. You can start exploring results of CORSID/CORSID-A by clicking any link in the table.</p>
   <table>
     <thead>
       <tr>
@@ -84,5 +86,13 @@ div {
 }
 .dim {
   color: #ccc;
+}
+h2 {
+  text-align: center;
+}
+p {
+  margin-left: 10%;
+  width: 80%;
+  text-align: center;
 }
 </style>

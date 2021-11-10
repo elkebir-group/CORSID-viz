@@ -129,7 +129,7 @@ export default {
   border-radius: 1em;
   padding: 1em;
   box-shadow: inset 0px 0px 9px 3px #94e1ff7a, 0 0 1px 1px #87d2ed5e;
-  background: linear-gradient(to top, #ffffff, #edfaff);
+  /* background: linear-gradient(to top, #ffffff, #edfaff); */
 }
 
 dl.info {

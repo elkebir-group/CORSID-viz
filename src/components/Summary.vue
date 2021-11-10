@@ -2,7 +2,7 @@
   <div class="summary">
     <h2 @click="test">{{name}}</h2>
 
-    <input type="file" id="user_file" @change="$emit('load-data', $event)" />
+    <!-- <input type="file" id="user_file" @change="$emit('load-data', $event)" /> -->
 
       <table>
         <thead>

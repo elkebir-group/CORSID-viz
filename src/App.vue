@@ -1,9 +1,9 @@
 <template>
 <div id="app">
     <div class="topnav">
-        <router-link to="/">Home</router-link>
-    <router-link to="/demo">Demo</router-link>
-    <router-link to="/viz">Visualization</router-link>
+      <!-- <router-link to="/">Home</router-link> -->
+      <router-link to="/demo">Demo</router-link>
+      <!-- <router-link to="/viz">Visualization</router-link> -->
     </div>
   <!-- route outlet -->
   <!-- component matched by the route will render here -->

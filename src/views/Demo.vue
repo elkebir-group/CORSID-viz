@@ -1,5 +1,11 @@
 <template>
 <div>
+  <h2>Welcome to the CORSID Visualization Tool</h2>
+  <p>In this demo we show 468 samples used in the analysis. You can start exploring results of CORSID/CORSID-A by clicking any link in the table.</p>
+  <div class="search-wrapper">
+    <label>Search: </label>
+    <input type="text" v-model="search"/>
+  </div>
   <table>
     <thead>
       <tr>
@@ -38,8 +44,10 @@ import results from '../assets/demo.json'
 export default {
   data: () => ({
     results: results,
+    shown_results: results,
     sort_item: 'sample',
     sort_order: 1,
+    search: '',
   }),
   methods: {
     sort(item) {
@@ -56,7 +64,19 @@ export default {
       return this.sort_order > 0 ? "fas fa-sort-up" : "fas fa-sort-down";
     },
     sorted_results() {
-      return this.results.sort((a,b) => {
+      this.shown_results = this.results;
+      const search_term = this.search.toLowerCase();
+      this.shown_results = this.shown_results.filter(
+        row => {
+          const genus = row.genus.toLowerCase();
+          const sample = row.sample.toLowerCase();
+          const subgenus = row.subgenus.toLowerCase();
+          return genus.includes(search_term) || sample.includes(search_term) || subgenus.includes(search_term)
+        }
+      )
+      // console.log(this.shown_results[0])
+
+      return this.shown_results.sort((a,b) => {
         var i = a[this.sort_item].toUpperCase();
         var j = b[this.sort_item].toUpperCase();
         if (i < j) {
@@ -84,5 +104,17 @@ div {
 }
 .dim {
   color: #ccc;
+}
+h2 {
+  text-align: center;
+}
+p {
+  margin-left: 10%;
+  width: 80%;
+  text-align: center;
+}
+.search-wrapper {
+  width:fit-content;
+  height:fit-content;
 }
 </style>

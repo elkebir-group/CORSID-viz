@@ -1,6 +1,6 @@
 <template>
   <div id="sliding"></div>
-  <p>{{ encoded }}</p>
+  <p v-show="false">{{ new_sequence }}</p>
 </template>
 
 <script>
@@ -15,11 +15,10 @@ export default {
     sequence: String,
   },
   methods: {
-    updateBarChart() {
+    updateBarChart(dataset) {
       d3.select("svg").remove();
-      var dataset = this.encoded;
       for (let i = 0; i < 8; i++)
-        dataset.push({ index: this.encoded.length, value: 0 });
+        dataset.push({ index: dataset.length, value: 0 });
       console.log(dataset);
 
       var margin = { top: 20, right: 20, bottom: 90, left: 20 },
@@ -55,7 +54,10 @@ export default {
       var xScale2 = d3.scaleBand().range([0, width]);
       xScale2.domain(d3.range(0, dataset.length));
 
-      var xAxis = d3.axisBottom(xScale).tickSize(0);
+      var xAxis = d3
+        .axisBottom(xScale)
+        .tickSize(0)
+        .tickValues(xScale.domain().slice(0, dataset.length - 8));
       var xAxisGroup = focus
         .append("g")
         .attr("transform", "translate(0," + height + ")");
@@ -307,11 +309,10 @@ export default {
           d3.select(this).transition().call(brush.move, [left, right]);
         }
       }
-      
     },
   },
   mounted() {
-    this.updateBarChart();
+    this.updateBarChart(this.encoded);
   },
   computed: {
     encoded() {
@@ -341,6 +342,10 @@ export default {
           return obj;
         }
       });
+    },
+    new_sequence() {
+      this.updateBarChart(this.encoded);
+      return this.encoded;
     },
   },
 };

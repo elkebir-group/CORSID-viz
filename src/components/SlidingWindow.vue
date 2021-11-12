@@ -54,10 +54,8 @@ export default {
       var xScale2 = d3.scaleBand().range([0, width]);
       xScale2.domain(d3.range(0, dataset.length));
 
-      var xAxis = d3
-        .axisBottom(xScale)
-        .tickSize(0)
-        .tickValues(xScale.domain().slice(0, dataset.length - 8));
+      var xAxis = d3.axisBottom(xScale).tickSize(0); 
+      // .tickValues(xScale.domain().slice(0, dataset.length - 8))
       var xAxisGroup = focus
         .append("g")
         .attr("transform", "translate(0," + height + ")");

@@ -4,7 +4,7 @@
 
     <!-- <input type="file" id="user_file" @change="$emit('load-data', $event)" /> -->
 
-    <SlidingWindow :sequence="sequence" />
+    <SlidingWindow :sequence="sequence.slice(0, leader_end)" />
 
     <table>
       <thead>
@@ -166,6 +166,7 @@ export default {
     summarydata: Array,
     idxShown: Number,
     is_corsid_a: Boolean,
+    leader_end: Number,
   },
   methods: {
     percentage(num) {

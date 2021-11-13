@@ -7,6 +7,7 @@
       :summarydata="summary_data"
       :idxShown="idxShown"
       :is_corsid_a="json.is_corsid_a"
+      :leader_end="json.ORF1ab[0]"
       @load-data="load_data($event)"
       @add-solution="add_solution($event)"
       @show-as-compare="show_as_compare($event)"

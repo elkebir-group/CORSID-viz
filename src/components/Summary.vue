@@ -4,7 +4,7 @@
 
     <!-- <input type="file" id="user_file" @change="$emit('load-data', $event)" /> -->
 
-    <SlidingWindow :sequence="sequence.slice(0, leader_end)" />
+    <Slider :sequence="sequence.slice(0, leader_end)" />
 
     <table>
       <thead>
@@ -145,11 +145,13 @@
 import * as d3 from "d3";
 import Percentage from "./Percentage.vue";
 import SlidingWindow from "./SlidingWindow.vue";
+import Slider from "./Slider.vue";
 
 export default {
   components: {
     Percentage,
     SlidingWindow,
+    Slider,
   },
   name: "Summary",
   data() {

@@ -5,6 +5,18 @@
   <div class="search-wrapper">
     <label>Search: </label>
     <input type="text" v-model="search"/>
+    <label>Genus: </label>
+
+    <select v-model="select_genus">
+      <option disabled value="">Please select genus</option>
+      <option :key="genus" v-for="genus of genera">{{genus}}</option>
+    </select>
+
+    <label>Subgenus: </label>
+    <select v-model="select_subgenus">
+      <option disabled value="">Please select subgenus</option>
+      <option :key="subgenus" v-for="subgenus of subgenera">{{subgenus}}</option>
+    </select>
   </div>
   <table>
     <thead>
@@ -48,6 +60,8 @@ export default {
     sort_item: 'sample',
     sort_order: 1,
     search: '',
+    select_genus: '',
+    select_subgenus: '',
   }),
   methods: {
     sort(item) {
@@ -71,7 +85,21 @@ export default {
           const genus = row.genus.toLowerCase();
           const sample = row.sample.toLowerCase();
           const subgenus = row.subgenus.toLowerCase();
-          return genus.includes(search_term) || sample.includes(search_term) || subgenus.includes(search_term)
+          return (
+            (
+              this.select_genus === "" ||
+              genus == this.select_genus.toLowerCase()
+            ) &&
+            (
+              this.select_subgenus === "" ||
+              subgenus == this.select_subgenus.toLowerCase()
+            ) &&
+            (
+              genus.includes(search_term) ||
+              sample.includes(search_term) ||
+              subgenus.includes(search_term)
+            )
+          )
         }
       )
       // console.log(this.shown_results[0])
@@ -87,6 +115,12 @@ export default {
         }
         return 0;
       })
+    },
+    genera() {
+      return new Set(this.results.map(item => item.genus));
+    },
+    subgenera() {
+      return new Set(this.results.map(item => item.subgenus));
     }
   }
 }

@@ -1,6 +1,9 @@
 <template>
   <div id="slider">
-    <svg :width="width" :height="height + h_heatmap">
+    <svg
+      preserveAspectRatio="xMinYMin meet"
+      :viewBox="`0 0 ${width} ${height + h_heatmap}`"
+    >
       <g id="logo">
         <g>
           <path
@@ -53,7 +56,7 @@ import * as d3 from "d3";
 export default {
   name: "Slider",
   data: () => ({
-    width: 1000,
+    width: 1080,
     height: 70,
     h_heatmap: 40,
     margin: {
@@ -303,5 +306,12 @@ export default {
 #logo rect:hover {
   fill: #0003;
   transition: fill 0.1s linear;
+}
+</style>
+
+<style scoped>
+#slider {
+  width: 80%;
+  margin-left: 10%;
 }
 </style>

@@ -5,6 +5,19 @@
   <div class="search-wrapper">
     <label>Search: </label>
     <input type="text" v-model="search"/>
+    <label> Genus: </label>
+    <select v-model="genus_search">
+      <option value=""></option>
+      <option value="Alphacoronavirus">Alphacoronavirus</option>
+      <option value="Betacoronavirus">Betacoronavirus</option>
+      <option value="Gammacoronavirus">Gammacoronavirus</option>
+      <option value="Deltacoronavirus">Deltacoronavirus</option>
+    </select>
+    <label> Subgenus: </label>
+    <select v-model="subgenus_search">
+      <option value=""></option>
+      <option :key="idx" v-for="subgenus, idx in subgenuses_for_genus" v-bind:value="subgenus"> {{subgenus}} </option>
+    </select>
   </div>
   <table>
     <thead>
@@ -48,6 +61,9 @@ export default {
     sort_item: 'sample',
     sort_order: 1,
     search: '',
+    genus_search: '',
+    subgenus_search: '',
+    subgenuses: []
   }),
   methods: {
     sort(item) {
@@ -60,11 +76,45 @@ export default {
     }
   },
   computed: {
+    subgenuses_for_genus() {
+      var genus_search_lowercase = this.genus_search.toLowerCase()
+      var valid_rows = this.results
+        .filter(items => genus_search_lowercase.includes(items.genus.toLowerCase()))
+
+      this.subgenuses = new Set()
+      for (var row of valid_rows) {
+        this.subgenuses.add(row.subgenus)
+      }
+
+      return this.subgenuses
+    },
     class_sorted() {
       return this.sort_order > 0 ? "fas fa-sort-up" : "fas fa-sort-down";
     },
     sorted_results() {
       this.shown_results = this.results;
+
+      // Genus Filtering
+      const genus_filter = this.genus_search.toLowerCase()
+      
+      this.shown_results = this.shown_results.filter(
+        row => {
+          const genus = row.genus.toLowerCase()
+          return genus.includes(genus_filter)
+        }
+      )
+
+      // Subgenus Filtering
+      const subgenus_filter = this.subgenus_search.toLowerCase()
+      
+      this.shown_results = this.shown_results.filter(
+        row => {
+          const subgenus = row.subgenus.toLowerCase()
+          return subgenus.includes(subgenus_filter)
+        }
+      )
+
+      // Search Bar Filtering
       const search_term = this.search.toLowerCase();
       this.shown_results = this.shown_results.filter(
         row => {

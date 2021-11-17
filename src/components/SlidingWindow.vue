@@ -8,6 +8,7 @@ import * as d3 from "d3";
 
 export default {
   components: {},
+  emits: ['add'],
   data() {
     return {};
   },
@@ -17,8 +18,10 @@ export default {
   methods: {
     updateBarChart(dataset) {
       d3.select("svg").remove();
-      for (let i = 0; i < 8; i++)
-        dataset.push({ index: dataset.length, value: 0 });
+      for (let i = -6; i < 1; i++)
+        dataset.push({ index: i, value: 0});
+      for (let i = 0; i < 9; i++)
+        dataset.push({ index: dataset.length-6, value: 0 });
       console.log(dataset);
 
       var margin = { top: 20, right: 20, bottom: 90, left: 20 },
@@ -36,6 +39,18 @@ export default {
       var focus = svg
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      var box = focus
+        .append("rect")
+        .attr("x", 253.33333333333331)
+        .attr("y", 15)
+        .attr("width", 506.66666666666663-253.33333333333331)
+        .attr("height", height)
+        .attr("stroke", "#ae23ae9b")
+        .attr("stroke-dasharray", [10,5])
+        .attr("stroke-linecap", "butt")
+        .attr("stroke-width", 2)
+        .attr("fill", "#ffffff");
+        
       var context = svg
         .append("g")
         .attr(
@@ -47,12 +62,12 @@ export default {
       var yScale = d3.scaleLinear().range([0, 0]).domain([0, 0]);
       //add x axis
       var xScale = d3.scaleBand().range([0, width]);
-      xScale.domain(d3.range(0, dataset.length));
+      xScale.domain(d3.range(-6, dataset.length-6));
       //set y scale
       var yScale2 = d3.scaleLinear().range([0, height2]).domain([0, 0]);
       //add x axis
       var xScale2 = d3.scaleBand().range([0, width]);
-      xScale2.domain(d3.range(0, dataset.length));
+      xScale2.domain(d3.range(-6, dataset.length-6));
 
       var xAxis = d3.axisBottom(xScale).tickSize(0); 
       // .tickValues(xScale.domain().slice(0, dataset.length - 8))
@@ -104,11 +119,6 @@ export default {
         })
         .attr("fill", (d) => {
           return "none";
-        })
-        .on("click", function (d, i) {
-          let id = d3.select(this).attr("id");
-          let index = id.substring(1, id.length);
-          console.log(index);
         });
 
       xAxisGroup.call(xAxis);
@@ -143,11 +153,12 @@ export default {
           let x = xScale(d.index) - 103;
           let y = -20;
           return "translate(" + x + "," + y + ") scale(0.8, 3)";
-        })
-        .on("click", function (d, i) {
-          let id = d3.select(this).attr("id");
-          let index = id.substring(1, id.length);
-          console.log(index);
+        });
+      
+      box.on("click",() => {
+          var idx = parseInt(d3.selectAll("path")._groups[0][8].id.substring(1));
+          this.$emit('add', idx);
+          console.log(idx);
         });
 
       var bars2 = context
@@ -232,7 +243,7 @@ export default {
               } else return height - yScale(d.value);
             });
 
-          d3.selectAll("path").remove();
+          focus.selectAll("path").remove();
           focus
             .selectAll("path")
             .data(initialdata)
@@ -264,11 +275,6 @@ export default {
               let y = yScale(d.value) - 20;
 
               return "translate(" + x + "," + y + ") scale(0.8, 3)";
-            })
-            .on("click", function (d, i) {
-              let id = d3.select(this).attr("id");
-              let index = id.substring(1, id.length);
-              console.log(index);
             });
 
           xAxisGroup.call(xAxis);
@@ -315,6 +321,7 @@ export default {
   computed: {
     encoded() {
       return Array.from(Array.from(this.sequence.slice(0, 200)), (d, i) => {
+        i = i+1;
         if (d == "A") {
           let obj = {};
           obj["index"] = i;

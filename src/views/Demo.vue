@@ -86,8 +86,6 @@ export default {
         this.subgenuses.add(row.subgenus)
       }
 
-      console.log("subg")
-      console.log(this.subgenuses)
       return this.subgenuses
     },
     class_sorted() {
@@ -98,7 +96,7 @@ export default {
 
       // Genus Filtering
       const genus_filter = this.genus_search.toLowerCase()
-      console.log(this.shown_results[0])
+      
       this.shown_results = this.shown_results.filter(
         row => {
           const genus = row.genus.toLowerCase()
@@ -108,7 +106,7 @@ export default {
 
       // Subgenus Filtering
       const subgenus_filter = this.subgenus_search.toLowerCase()
-      console.log(this.shown_results[0])
+      
       this.shown_results = this.shown_results.filter(
         row => {
           const subgenus = row.subgenus.toLowerCase()

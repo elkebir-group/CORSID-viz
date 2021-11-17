@@ -320,8 +320,7 @@ export default {
   },
   computed: {
     encoded() {
-      return Array.from(Array.from(this.sequence.slice(0, 200)), (d, i) => {
-        i = i+1;
+      return Array.from(Array.from(this.sequence), (d, i) => {
         if (d == "A") {
           let obj = {};
           obj["index"] = i;

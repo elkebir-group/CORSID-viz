@@ -8,7 +8,7 @@ import * as d3 from "d3";
 
 export default {
   components: {},
-  emits: ['add'],
+  emits: ["add"],
   data() {
     return {};
   },
@@ -18,10 +18,10 @@ export default {
   methods: {
     updateBarChart(dataset) {
       d3.select("svg").remove();
-      for (let i = -6; i < 1; i++)
-        dataset.push({ index: i, value: 0});
-      for (let i = 0; i < 9; i++)
-        dataset.push({ index: dataset.length-6, value: 0 });
+      var len = dataset.length;
+      for (let i = -6; i < 1; i++) dataset.push({ index: i, value: 0 });
+      for (let i = 0; i < this.brushtail[len - 181]; i++)
+        dataset.push({ index: dataset.length - 6, value: 0 });
       console.log(dataset);
 
       var margin = { top: 20, right: 20, bottom: 90, left: 20 },
@@ -43,14 +43,14 @@ export default {
         .append("rect")
         .attr("x", 253.33333333333331)
         .attr("y", 15)
-        .attr("width", 506.66666666666663-253.33333333333331)
+        .attr("width", 506.66666666666663 - 253.33333333333331)
         .attr("height", height)
         .attr("stroke", "#ae23ae9b")
-        .attr("stroke-dasharray", [10,5])
+        .attr("stroke-dasharray", [10, 5])
         .attr("stroke-linecap", "butt")
         .attr("stroke-width", 2)
         .attr("fill", "#ffffff");
-        
+
       var context = svg
         .append("g")
         .attr(
@@ -62,14 +62,14 @@ export default {
       var yScale = d3.scaleLinear().range([0, 0]).domain([0, 0]);
       //add x axis
       var xScale = d3.scaleBand().range([0, width]);
-      xScale.domain(d3.range(-6, dataset.length-6));
+      xScale.domain(d3.range(-6, dataset.length - 6));
       //set y scale
       var yScale2 = d3.scaleLinear().range([0, height2]).domain([0, 0]);
       //add x axis
       var xScale2 = d3.scaleBand().range([0, width]);
-      xScale2.domain(d3.range(-6, dataset.length-6));
+      xScale2.domain(d3.range(-6, dataset.length - 6));
 
-      var xAxis = d3.axisBottom(xScale).tickSize(0); 
+      var xAxis = d3.axisBottom(xScale).tickSize(0);
       // .tickValues(xScale.domain().slice(0, dataset.length - 8))
       var xAxisGroup = focus
         .append("g")
@@ -154,12 +154,11 @@ export default {
           let y = -20;
           return "translate(" + x + "," + y + ") scale(0.8, 3)";
         });
-      
-      box.on("click",() => {
-          var idx = parseInt(d3.selectAll("path")._groups[0][8].id.substring(1));
-          this.$emit('add', idx);
-          console.log(idx);
-        });
+
+      box.on("click", () => {
+        var idx = parseInt(d3.selectAll("path")._groups[0][8].id.substring(1));
+        this.$emit("add", idx);
+      });
 
       var bars2 = context
         .selectAll("rect")
@@ -321,35 +320,32 @@ export default {
   computed: {
     encoded() {
       return Array.from(Array.from(this.sequence), (d, i) => {
-        if (d == "A") {
-          let obj = {};
-          obj["index"] = i;
-          obj["value"] = 1;
-          return obj;
-        }
-        if (d == "T") {
-          let obj = {};
-          obj["index"] = i;
-          obj["value"] = 2;
-          return obj;
-        }
-        if (d == "C") {
-          let obj = {};
-          obj["index"] = i;
-          obj["value"] = 3;
-          return obj;
-        }
-        if (d == "G") {
-          let obj = {};
-          obj["index"] = i;
-          obj["value"] = 4;
-          return obj;
-        }
+        let obj = {};
+        obj["index"] = i + 1;
+        if (d == "A") obj["value"] = 1;
+        if (d == "T") obj["value"] = 2;
+        if (d == "C") obj["value"] = 3;
+        if (d == "G") obj["value"] = 4;
+        return obj;
       });
     },
     new_sequence() {
       this.updateBarChart(this.encoded);
       return this.encoded;
+    },
+    brushtail() {
+      var tail = [];
+      var col = 10;
+      for (let i = 0; i < 9; i++) tail.push(7);
+      for (let i = 0; i < 8; i++) tail.push(8);
+      for (let i = 0; i < 10; i++) tail.push(9);
+      for (let i = 0; i < 25; i++) {
+        for (let j = 0; j < 8; j++) tail.push(col);
+        col++;
+        for (let j = 0; j < 9; j++) tail.push(col);
+        col++;
+      }
+      return tail;
     },
   },
 };

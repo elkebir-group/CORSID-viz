@@ -43,8 +43,8 @@
         <td> {{ res.sample }} </td>
         <td> {{ res.genus }} </td>
         <td> {{ res.subgenus }} </td>
-        <td> <a :href="`#/viz/${encodeURIComponent(res.corsid_url)}`">CORSID</a> </td>
-        <td> <a :href="`#/viz/${encodeURIComponent(res.corsid_a_url)}`">CORSID-A</a> </td>
+        <td> <a :href="`#/viz/${encodeURIComponent(res.corsid_url)}`" > <button type="button">CORSID</button></a> </td>
+        <td> <a :href="`#/viz/${encodeURIComponent(res.corsid_a_url)}`"> <button type="button">CORSID-A</button></a> </td>
       </tr>
     </tbody>
   </table>

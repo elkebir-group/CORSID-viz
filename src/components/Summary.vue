@@ -4,7 +4,12 @@
 
     <!-- <input type="file" id="user_file" @change="$emit('load-data', $event)" /> -->
 
-    <SlidingWindow :sequence="sequence.slice(0, leader_end)" @add="add" />
+    <SlidingWindow
+      :sequence="sequence.slice(0, leader_end)"
+      @add="add"
+      @jump="jump"
+    />
+    <p> {{ this.message }} </p>
 
     <table>
       <thead>
@@ -157,6 +162,7 @@ export default {
       idxJump: 0,
       currentSort: "idx",
       currentSortDir: "asc",
+      message: "",
     };
   },
   props: {
@@ -180,7 +186,7 @@ export default {
     },
     add(pos) {
       console.log(pos);
-      var res = this.summarydata.filter((d) => d.pos === pos);
+      var res = this.sortedSummaryData.filter((d) => d.pos === pos);
       console.log(res);
       if (res.length === 0) {
         console.log("no such records");
@@ -191,6 +197,22 @@ export default {
         this.results[res[0].idx - 1],
       ]);
     },
+    jump(pos) {
+      console.log("pos:", pos);
+      var idx = this.sortedSummaryData.findIndex((d) => d.pos == pos);
+      console.log(idx);
+      if (idx == -1) {
+        console.log("no such records");
+        this.message = "There are no records with position " + pos + ".";
+        return;
+      } else {
+        this.message = "";
+        // var idx = res[0].idx;
+        console.log("idx:", idx);
+        this.$emit("show", idx);
+      }
+      
+    }
   },
   computed: {
     sortedSummaryData() {

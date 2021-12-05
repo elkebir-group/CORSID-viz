@@ -1,6 +1,6 @@
 <template>
   <div id="sliding"></div>
-  <p v-show="false">{{ new_sequence }}</p>
+  <p v-show="false">{{ encoded }}</p>
 </template>
 
 <script>
@@ -8,9 +8,11 @@ import * as d3 from "d3";
 
 export default {
   components: {},
-  emits: ["add"],
+  emits: ["add", "jump"],
   data() {
-    return {};
+    return {
+      init: 0,
+    };
   },
   props: {
     sequence: String,
@@ -22,7 +24,7 @@ export default {
       for (let i = -6; i < 1; i++) dataset.push({ index: i, value: 0 });
       for (let i = 0; i < this.brushtail[len - 181]; i++)
         dataset.push({ index: dataset.length - 6, value: 0 });
-      console.log(dataset);
+      // console.log(dataset);
 
       var margin = { top: 20, right: 20, bottom: 90, left: 20 },
         margin2 = { top: 230, right: 20, bottom: 30, left: 20 },
@@ -191,7 +193,14 @@ export default {
           [width, height2],
         ])
         .on("brush", brushed) //when mouse up, move the selection to the exact tick //start(mouse down), brush(mouse move), end(mouse up)
-        .on("end", brushend);
+        .on("end", (event) => {
+          if (this.init) {
+            var idx = parseInt(
+              d3.selectAll("path")._groups[0][8].id.substring(1)
+            );
+            this.$emit("jump", idx);
+          } else this.init = 1;
+        });
       context
         .append("g")
         .attr("class", "brush")
@@ -279,47 +288,50 @@ export default {
           xAxisGroup.call(xAxis);
         }
       }
-      function brushend(event) {
-        if (!event.sourceEvent) return; // Only transition after input.
-        if (!event.selection) return; // Ignore empty selections.
-        if (event.sourceEvent && event.sourceEvent.type === "zoom") return;
-        var newInput = [];
-        var brushArea = event.selection;
-        if (brushArea === null) brushArea = xScale.range();
 
-        if (brushArea[1] - brushArea[0] < 80) {
-          d3.selectAll(".brush").call(brush.move, [previousS0, previousS1]);
-          return;
-        }
-        var previousS0 = brushArea[0];
-        var previousS1 = brushArea[1];
+      // function brushend(event) {
+      //   if (!event.sourceEvent) return; // Only transition after input.
+      //   if (!event.selection) return; // Ignore empty selections.
+      //   if (event.sourceEvent && event.sourceEvent.type === "zoom") return;
+      //   var newInput = [];
+      //   var brushArea = event.selection;
+      //   if (brushArea === null) brushArea = xScale.range();
 
-        xScale2.domain().forEach(function (d) {
-          if (newInput.length < 21) {
-            var pos = xScale2(d) + xScale2.bandwidth() / 2;
-            if (pos >= brushArea[0] && pos <= brushArea[1]) {
-              newInput.push(d);
-            }
-          }
-        });
+      //   if (brushArea[1] - brushArea[0] < 80) {
+      //     d3.selectAll(".brush").call(brush.move, [previousS0, previousS1]);
+      //     return;
+      //   }
+      //   var previousS0 = brushArea[0];
+      //   var previousS1 = brushArea[1];
 
-        //relocate the position of brush area
-        var increment = 0;
-        if (newInput.length > 21) {
-          var left = xScale2(d3.min(newInput));
-          var right = xScale2(d3.max(newInput)) + xScale2.bandwidth();
+      //   xScale2.domain().forEach(function (d) {
+      //     if (newInput.length < 21) {
+      //       var pos = xScale2(d) + xScale2.bandwidth() / 2;
+      //       if (pos >= brushArea[0] && pos <= brushArea[1]) {
+      //         newInput.push(d);
+      //       }
+      //     }
+      //   });
 
-          d3.select(this).transition().call(brush.move, [left, right]);
-        }
-      }
+      //   //relocate the position of brush area
+      //   var increment = 0;
+      //   if (newInput.length > 21) {
+      //     var left = xScale2(d3.min(newInput));
+      //     var right = xScale2(d3.max(newInput)) + xScale2.bandwidth();
+
+      //     d3.select(this).transition().call(brush.move, [left, right]);
+      //   }
+      // }
+
+      d3.selectAll(".brush>.handle").remove();
+      d3.selectAll(".brush>.overlay").remove();
     },
   },
-  mounted() {
-    this.updateBarChart(this.encoded);
-  },
+  mounted() {},
   computed: {
     encoded() {
-      return Array.from(Array.from(this.sequence), (d, i) => {
+      this.init = 0;
+      var data = Array.from(Array.from(this.sequence), (d, i) => {
         let obj = {};
         obj["index"] = i + 1;
         if (d == "A") obj["value"] = 1;
@@ -328,10 +340,8 @@ export default {
         if (d == "G") obj["value"] = 4;
         return obj;
       });
-    },
-    new_sequence() {
-      this.updateBarChart(this.encoded);
-      return this.encoded;
+      this.updateBarChart(data);
+      return data;
     },
     brushtail() {
       var tail = [];

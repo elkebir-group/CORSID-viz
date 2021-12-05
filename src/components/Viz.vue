@@ -14,6 +14,7 @@
       @add-idx-shown="add_idx_shown"
       @sub-idx-shown="sub_idx_shown"
       @jumpto="jumpto"
+      @show="show_brush_selected_record"
       ref="Summary"
     />
 
@@ -467,6 +468,8 @@ export default {
     sub_idx_shown() {
       if (this.idxShown >= 10)
         this.idxShown -= 10;
+      else if (this.idxShown < 10 && this.idxShown >= 0)
+        this.idxShown = 0;
     },
     jumpto(n) {
       if (isNaN(n)){
@@ -479,6 +482,9 @@ export default {
       }
       this.idxShown = (n-1)*10;
     },
+    show_brush_selected_record(n) {
+      this.idxShown = n;
+    }
   },
   computed: {
     boxes() {

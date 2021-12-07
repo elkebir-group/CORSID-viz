@@ -363,7 +363,10 @@ export default {
     solutions_shown: []
   }),
   created() {
-    if (this.$route.params["data_url"]){
+    if (process.env.VUE_APP_MODE == "singleton") {
+      this.json = require('@/assets/result.json');
+      console.log(this.json);
+    } else if (this.$route.params["data_url"]){
       console.log(this.$route.params["data_url"]);
       fetch(this.$route.params["data_url"])
         .then(response => response.json())

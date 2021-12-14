@@ -4,7 +4,7 @@
       preserveAspectRatio="xMinYMin meet"
       :viewBox="`0 0 ${width} ${height + h_heatmap}`"
     >
-      <g id="logo">
+      <g id="logo" :transform="`translate(0, ${margin.top})`">
         <g>
           <path
             v-for="(path, i) in logo_paths"
@@ -23,9 +23,18 @@
             fill="#ffffff00"
             @click="choose_idx=i+offset"
           ></rect>
+          <rect
+            class="middle"
+            :x="logo_x_scale(7) - 1"
+            :y="-logo_y_scale(0.05)"
+            :height="logo_y_scale(1.1)"
+            :width="logo_x_scale(7) - 2"
+            rx="5"
+            ry="5"
+          ></rect>
         </g>
         <g
-          :transform="`translate(0, ${height - margin.bottom})`"
+          :transform="`translate(0, ${height - margin.top - margin.bottom})`"
           ref="logo_x_axis"
         ></g>
       </g>
@@ -60,10 +69,11 @@ export default {
     height: 70,
     h_heatmap: 40,
     margin: {
+      top: 5,
       bottom: 20,
     },
     offset: 0,
-    focus_len: 22,
+    focus_len: 21,
     choose_idx: 0
   }),
   props: {
@@ -159,7 +169,9 @@ export default {
 
       var eachBand = this.heatmap_x_scale.step();
       var index = Math.round((event.selection[0] / eachBand));
-      this.offset = this.heatmap_x_scale.domain()[index];
+      // this.offset = this.heatmap_x_scale.domain()[index];
+      // console.log(index, this.offset);
+      this.offset = index;
     },
   },
   computed: {
@@ -177,7 +189,7 @@ export default {
       return d3
         .scaleLinear()
         .domain([0, 1])
-        .range([0, this.height - this.margin.bottom]);
+        .range([0, this.height - this.margin.top - this.margin.bottom]);
     },
     heatmap_x_scale() {
       return d3
@@ -216,17 +228,21 @@ export default {
       });
     },
     encoded_focused() {
-      return this.encoded.slice(this.offset, this.offset + this.focus_len);
+      if (this.offset >= 0) {
+        return this.encoded.slice(this.offset, this.offset + this.focus_len);
+      } else {
+        return Array(-this.offset).fill(null).concat(this.encoded.slice(0, this.offset + this.focus_len));
+      }
     },
     logo_paths() {
       return Array.from(Array.from(this.encoded_focused), (d, i) => {
         return {
           index: i,
-          value: d.value,
-          base: d.base,
+          value: d == null ? null : d.value,
+          base: d == null ? null : d.base,
           x: this.logo_x_scale(i),
           y: 0,
-          transform: this.calcPathTransform(
+          transform: d == null ? null : this.calcPathTransform(
             this.get_bbox(d.base),
             this.logo_y_scale,
             this.logo_x_scale.bandwidth(),
@@ -266,7 +282,9 @@ export default {
       );
 
       var brush = d3.brushX()
-        .extent([[0, 0], [this.width, this.h_heatmap - this.margin.bottom]])
+        .extent([
+                  [-this.heatmap_x_scale(7), 0],
+                  [this.width+this.heatmap_x_scale(7), this.h_heatmap - this.margin.bottom]])
         .on("brush", this.brushed);
 
       var gBrush = d3.selectAll("#heatmap").append("g")
@@ -293,19 +311,16 @@ export default {
 
 <style>
 #heatmap-brush rect.selection {
-  fill: #777;
-  fill-opacity: 0.3;
-  stroke: #000000;
+  fill: rgb(255, 255, 255);
+  fill-opacity: 0.7;
+  stroke: #13294B;
   stroke-width: 2;
-  stroke-dasharray: 4 1;
 }
-#logo rect {
-  cursor: pointer;
-  transition: fill 0.1s linear;
-}
-#logo rect:hover {
-  fill: #0003;
-  transition: fill 0.1s linear;
+
+#logo rect.middle {
+  fill: #00000000;
+  stroke: #13294B;
+  stroke-width: 3;
 }
 </style>
 

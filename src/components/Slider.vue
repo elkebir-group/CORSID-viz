@@ -31,7 +31,27 @@
             :width="logo_x_scale(7) - 2"
             rx="5"
             ry="5"
-          ></rect>
+          >
+          </rect>
+          <rect
+            class="add"
+            :x="logo_x_scale(7) + 5"
+            :y="2"
+            :height="20"
+            :width="20"
+            rx="3"
+            ry="3"
+            @click="this.$emit('add', offset + 8);"
+          >
+            <title>Add solution</title>
+          </rect>
+          <text
+            class="add"
+            :x="logo_x_scale(7) + 5 + 20/2"
+            :y="2 + 20/2"
+            dominant-baseline="middle"
+            text-anchor="middle"
+          >+</text>
         </g>
         <g
           :transform="`translate(0, ${height - margin.top - margin.bottom})`"
@@ -64,6 +84,9 @@ import * as d3 from "d3";
 
 export default {
   name: "Slider",
+  emits: [
+    "add",
+  ],
   data: () => ({
     width: 1080,
     height: 70,
@@ -321,6 +344,26 @@ export default {
   fill: #00000000;
   stroke: #13294B;
   stroke-width: 3;
+}
+
+#logo rect.add {
+  fill: #8888;
+  stroke: #13294B33;
+  stroke-width: 1;
+}
+#logo rect.add:hover {
+  fill: #fffa;
+  stroke: #13294B;
+  stroke-width: 1;
+}
+#logo text.add {
+  fill:#13294B91;
+  font-weight: bold;
+  pointer-events: none;
+  font-size: 1.3em;
+}
+#logo rect.add:hover ~ text.add {
+  fill:#13294B;
 }
 </style>
 

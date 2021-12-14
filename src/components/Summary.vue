@@ -4,7 +4,10 @@
 
     <!-- <input type="file" id="user_file" @change="$emit('load-data', $event)" /> -->
 
-    <Slider :sequence="sequence.slice(0, leader_end)" />
+    <Slider
+      :sequence="sequence.slice(0, leader_end)"
+      @add="add"
+    />
 
     <table>
       <thead>
@@ -179,6 +182,19 @@ export default {
         this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
       }
       this.currentSort = s;
+    },
+    add(pos) {
+      console.log(pos);
+      var res = this.summarydata.filter((d) => d.pos === pos);
+      console.log(res);
+      if (res.length === 0) {
+        console.log("no such records");
+        return;
+      }
+      this.$emit("add-solution", [
+        res[0].idx - 1,
+        this.results[res[0].idx - 1],
+      ]);
     },
   },
   computed: {

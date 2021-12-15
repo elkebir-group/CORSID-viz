@@ -43,8 +43,18 @@
         <td> {{ res.sample }} </td>
         <td> {{ res.genus }} </td>
         <td> {{ res.subgenus }} </td>
-        <td> <a :href="`#/viz/${encodeURIComponent(res.corsid_url)}`" > <button type="button">CORSID</button></a> </td>
-        <td> <a :href="`#/viz/${encodeURIComponent(res.corsid_a_url)}`"> <button type="button">CORSID-A</button></a> </td>
+        <td>
+          <a class="button" :href="`#/viz/${encodeURIComponent(res.corsid_url)}`">
+            <i class="fas fa-external-link-alt">
+            </i>
+          </a>
+        </td>
+        <td>
+          <a class="button" :href="`#/viz/${encodeURIComponent(res.corsid_a_url)}`">
+            <i class="fas fa-external-link-alt">
+            </i>
+          </a>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -166,5 +176,26 @@ p {
 .search-wrapper {
   width:fit-content;
   height:fit-content;
+}
+a.button {
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 400;
+  color: #212529;
+  text-align: center;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.05rem 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+  background-color: #e6e6e6;
+  border-color: #7e7e7e;
 }
 </style>

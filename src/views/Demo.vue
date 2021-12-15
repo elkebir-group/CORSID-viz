@@ -14,7 +14,7 @@
       <option value="Deltacoronavirus">Deltacoronavirus</option>
     </select>
     <label> Subgenus: </label>
-    <select v-model="subgenus_search">
+    <select v-model="subgenus_search" :disabled="genus_search == ''">
       <option value=""></option>
       <option :key="idx" v-for="subgenus, idx in subgenuses_for_genus" v-bind:value="subgenus"> {{subgenus}} </option>
     </select>

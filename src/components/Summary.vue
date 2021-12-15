@@ -7,6 +7,7 @@
     <Slider
       :sequence="sequence.slice(0, leader_end)"
       @add="add"
+      @jump="jump"
     />
 
     <table>
@@ -131,15 +132,15 @@
         }}
       </span>
       of <span>{{ summarydata.length }}&ensp;</span>
-      <i class="fas fa-chevron-left" @click="$emit('sub-idx-shown')"></i>
+      <i class="fas fa-chevron-left" @click="sub_idx_shown"></i>
       <input
         type="text"
-        @keyup.enter="$emit('jumpto', this.idxJump)"
+        @keyup.enter="jumpto(parseInt(this.idxJump-1))"
         v-model="idxJump"
-        placeholder="0"
+        placeholder="1"
         style="width: 35px"
       />
-      <i class="fas fa-angle-right" @click="$emit('add-idx-shown')"></i>
+      <i class="fas fa-angle-right" @click="add_idx_shown"></i>
     </div>
   </div>
 </template>
@@ -159,7 +160,8 @@ export default {
   name: "Summary",
   data() {
     return {
-      idxJump: 0,
+      idxShown: 0,
+      idxJump: 1,
       currentSort: "idx",
       currentSortDir: "asc",
     };
@@ -169,7 +171,6 @@ export default {
     sequence: String,
     results: Array,
     summarydata: Array,
-    idxShown: Number,
     is_corsid_a: Boolean,
     leader_end: Number,
   },
@@ -185,7 +186,7 @@ export default {
     },
     add(pos) {
       console.log(pos);
-      var res = this.summarydata.filter((d) => d.pos === pos);
+      var res = this.sortedSummaryData.filter((d) => d.pos === pos);
       console.log(res);
       if (res.length === 0) {
         console.log("no such records");
@@ -195,6 +196,40 @@ export default {
         res[0].idx - 1,
         this.results[res[0].idx - 1],
       ]);
+    },
+    add_idx_shown() {
+      if (this.idxShown < this.results.length-10) {
+        this.idxShown += 10;
+      }
+    },
+    sub_idx_shown() {
+      if (this.idxShown >= 10) {
+        this.idxShown -= 10;
+      } else {
+        this.idxShown -= this.idxShown;
+      }
+    },
+    jump(pos) {
+      var idx = this.sortedSummaryData.findIndex((d) => d.pos == pos);
+      if (idx == -1) {
+        console.log("no such records");
+        this.message = "There are no records with position " + pos + ".";
+        return;
+      } else {
+        this.message = "";
+        this.jumpto(idx);
+      }
+    },
+    jumpto(n) {
+      if (isNaN(n)){
+          alert("please enter a number");
+          return;
+      }
+      if (n < 0 || n >= this.results.length){
+          alert("index out of range");
+          return;
+      }
+      this.idxShown = n;
     },
   },
   computed: {

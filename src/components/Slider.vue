@@ -41,7 +41,7 @@
             :width="20"
             rx="3"
             ry="3"
-            @click="this.$emit('add', offset + 8);"
+            @click="$emit('add', offset + 8)"
           >
             <title>Add solution</title>
           </rect>
@@ -86,6 +86,7 @@ export default {
   name: "Slider",
   emits: [
     "add",
+    "jump",
   ],
   data: () => ({
     width: 1080,
@@ -195,6 +196,7 @@ export default {
       // this.offset = this.heatmap_x_scale.domain()[index];
       // console.log(index, this.offset);
       this.offset = index;
+      this.$emit("jump", this.offset + 8);
     },
   },
   computed: {

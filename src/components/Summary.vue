@@ -113,11 +113,13 @@
                 $emit('add-solution', [res.idx - 1, results[res.idx - 1]])
               "
             >
-              Add
+              <i class="fas fa-plus"></i>
             </button>
           </td>
           <td>
-            <button @click="$emit('show-as-compare', res.idx)">Compare</button>
+            <button @click="$emit('show-as-compare', res.idx)">
+              <i class="fas fa-thumbtack"></i>
+            </button>
           </td>
         </tr>
       </tbody>

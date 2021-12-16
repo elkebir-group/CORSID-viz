@@ -13,17 +13,17 @@
     <table>
       <thead>
         <tr class="summary-table-header">
-          <th id="idx" @click="sort('idx')">
-            ID
-            <i
-              :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"
-            ></i>
-          </th>
-          <th id="core_seq">Core Sequence</th>
           <th id="pos" @click="sort('pos')">
             Position
             <i
               :class="currentSort === 'pos' ? class_sorted : 'fas fa-sort dim'"
+            ></i>
+          </th>
+          <th id="core_seq">Core Sequence</th>
+          <th id="idx" @click="sort('idx')">
+            Rank
+            <i
+              :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"
             ></i>
           </th>
           <th id="trs_l_start" @click="sort('trs_l_start')">
@@ -56,7 +56,7 @@
             Score
             <i
               :class="
-                currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'
+                currentSort === 'score' ? class_sorted : 'fas fa-sort dim'
               "
             ></i>
           </th>
@@ -79,7 +79,7 @@
           :key="res.idx"
           v-for="res in sortedSummaryData.slice(idxShown, idxShown + 10)"
         >
-          <td>{{ res.idx }}</td>
+          <td>{{ res.pos }}</td>
           <td class="aligned">
             <span
               v-for="(chr, idx) in res.core_seq"
@@ -93,7 +93,7 @@
               >{{ chr }}</span
             >
           </td>
-          <td>{{ res.pos }}</td>
+          <td>{{ res.idx }}</td>
           <td>{{ res.trs_l_start }} - {{ res.trs_l_end }}</td>
 
           <percentage
@@ -164,7 +164,7 @@ export default {
     return {
       idxShown: 0,
       idxJump: 1,
-      currentSort: "idx",
+      currentSort: "pos",
       currentSortDir: "asc",
     };
   },

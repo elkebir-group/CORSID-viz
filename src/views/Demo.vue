@@ -3,21 +3,32 @@
   <h2>Welcome to the CORSID Visualization Tool</h2>
   <p>In this demo we show 468 samples used in the analysis. You can start exploring results of CORSID/CORSID-A by clicking any link in the table.</p>
   <div class="search-wrapper">
-    <label>Search: </label>
-    <input type="text" v-model="search"/>
-    <label> Genus: </label>
-    <select v-model="genus_search">
-      <option value=""></option>
-      <option value="Alphacoronavirus">Alphacoronavirus</option>
-      <option value="Betacoronavirus">Betacoronavirus</option>
-      <option value="Gammacoronavirus">Gammacoronavirus</option>
-      <option value="Deltacoronavirus">Deltacoronavirus</option>
-    </select>
-    <label> Subgenus: </label>
-    <select v-model="subgenus_search" :disabled="genus_search == ''">
-      <option value=""></option>
-      <option :key="idx" v-for="subgenus, idx in subgenuses_for_genus" v-bind:value="subgenus"> {{subgenus}} </option>
-    </select>
+    <div class="form-group">
+      <label>Search: </label>
+      <input type="text" v-model="search"/>
+    </div>
+    <div class="form-group">
+      <label> Genus: </label>
+      <select v-model="genus_search">
+        <option value=""></option>
+        <option value="Alphacoronavirus">Alphacoronavirus</option>
+        <option value="Betacoronavirus">Betacoronavirus</option>
+        <option value="Gammacoronavirus">Gammacoronavirus</option>
+        <option value="Deltacoronavirus">Deltacoronavirus</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label> Subgenus: </label>
+      <select v-model="subgenus_search" :disabled="genus_search == ''">
+        <option value=""></option>
+        <option :key="idx" v-for="subgenus, idx in subgenuses_for_genus" v-bind:value="subgenus"> {{subgenus}} </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div @click='reset' class="button">
+        <i class="fas fa-undo-alt"></i>
+      </div>
+    </div>
   </div>
   <table>
     <thead>
@@ -44,13 +55,21 @@
         <td> {{ res.genus }} </td>
         <td> {{ res.subgenus }} </td>
         <td>
-          <a class="button" :href="`#/viz/${encodeURIComponent(res.corsid_url)}`">
+          <a
+            class="button"
+            target="_blank"
+            rel="noopener noreferrer"
+            :href="`#/viz/${encodeURIComponent(res.corsid_url)}`">
             <i class="fas fa-external-link-alt">
             </i>
           </a>
         </td>
         <td>
-          <a class="button" :href="`#/viz/${encodeURIComponent(res.corsid_a_url)}`">
+          <a
+            class="button"
+            target="_blank"
+            rel="noopener noreferrer"
+            :href="`#/viz/${encodeURIComponent(res.corsid_a_url)}`">
             <i class="fas fa-external-link-alt">
             </i>
           </a>
@@ -83,7 +102,13 @@ export default {
         this.sort_order = 1;
       }
       this.sort_item = item;
-    }
+    },
+    reset() {
+      this.search = ''
+      this.genus_search = ''
+      this.subgenus_search = ''
+      this.subgenuses = []
+    },
   },
   computed: {
     subgenuses_for_genus() {
@@ -153,7 +178,7 @@ export default {
 </script>
 
 <style scoped>
-div {
+div.search-wrapper {
   border: 1pt solid #ddd;
   margin: 1em 0 1em 0;
   border-radius: 1em;
@@ -161,6 +186,10 @@ div {
   padding: 1em;
   /* box-shadow: 0px 0px 10px 5px #ddd; */
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+div.form-group {
+  display: inline-block;
+  margin-left: 0.5em;
 }
 .dim {
   color: #ccc;
@@ -177,7 +206,7 @@ p {
   width:fit-content;
   height:fit-content;
 }
-a.button {
+.button {
   text-decoration: none;
   display: inline-block;
   font-weight: 400;
@@ -197,5 +226,9 @@ a.button {
 
   background-color: #e6e6e6;
   border-color: #7e7e7e;
+}
+.button:hover {
+  background-color: #d1d1d1;
+  border-color: #555555;
 }
 </style>

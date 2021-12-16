@@ -19,14 +19,20 @@
               :class="currentSort === 'pos' ? class_sorted : 'fas fa-sort dim'"
             ></i>
           </th>
-          <th id="core_seq">Core Sequence</th>
-          <th id="idx" @click="sort('idx')">
+          <th id="core_seq" title="Core sequence">Core Sequence</th>
+          <th
+            id="idx" @click="sort('idx')"
+            :title="is_corsid_a ? 'Ranked by `Weight`' : 'Ranked by (Coverage, Score, Min-Score) lexicographically'"
+          >
             Rank
             <i
               :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"
             ></i>
           </th>
-          <th id="trs_l_start" @click="sort('trs_l_start')">
+          <th
+            id="trs_l_start" @click="sort('trs_l_start')"
+            title="TRS-L range"
+          >
             TRS-L
             <i
               :class="
@@ -35,7 +41,10 @@
             ></i>
           </th>
 
-          <th id="compact" @click="sort('compact')">
+          <th 
+            id="compact" @click="sort('compact')"
+            title="Genome coveraged by identified ORFs"
+          >
             Coverage
             <i
               :class="
@@ -44,7 +53,10 @@
             ></i>
           </th>
 
-          <th v-if="is_corsid_a" id="weight" @click="sort('weight')">
+          <th
+            v-if="is_corsid_a" id="weight" @click="sort('weight')"
+            title="Total alignment score"
+          >
             Weight
             <i
               :class="
@@ -52,7 +64,10 @@
               "
             ></i>
           </th>
-          <th v-else id="score" @click="sort('score')">
+          <th
+            v-else id="score" @click="sort('score')"
+            title="Total alignment score"
+          >
             Score
             <i
               :class="
@@ -61,7 +76,10 @@
             ></i>
           </th>
 
-          <th v-if="!is_corsid_a" id="min_score" @click="sort('min_score')">
+          <th
+            v-if="!is_corsid_a" id="min_score" @click="sort('min_score')"
+            title="Minimum alignment score of an ORF in the solution"
+          >
             Min Score
             <i
               :class="
@@ -70,8 +88,14 @@
             ></i>
           </th>
 
-          <th id="plot">Plot</th>
-          <th id="compare">Compare</th>
+          <th
+            id="plot"
+            title="Add a solution to the top"
+          >Add</th>
+          <th
+            id="compare"
+            title="Pin a solution below to compare"
+          >Compare</th>
         </tr>
       </thead>
       <tbody>

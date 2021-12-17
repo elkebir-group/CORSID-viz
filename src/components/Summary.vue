@@ -4,25 +4,35 @@
 
     <!-- <input type="file" id="user_file" @change="$emit('load-data', $event)" /> -->
 
-    <SlidingWindow :sequence="sequence.slice(0, leader_end)" />
+    <Slider
+      :sequence="sequence.slice(0, leader_end)"
+      @add="add"
+      @jump="jump"
+    />
 
     <table>
       <thead>
         <tr class="summary-table-header">
-          <th id="idx" @click="sort('idx')">
-            ID
-            <i
-              :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"
-            ></i>
-          </th>
-          <th id="core_seq">Core Sequence</th>
           <th id="pos" @click="sort('pos')">
             Position
             <i
               :class="currentSort === 'pos' ? class_sorted : 'fas fa-sort dim'"
             ></i>
           </th>
-          <th id="trs_l_start" @click="sort('trs_l_start')">
+          <th id="core_seq" title="Core sequence">Core Sequence</th>
+          <th
+            id="idx" @click="sort('idx')"
+            :title="is_corsid_a ? 'Ranked by `Weight`' : 'Ranked by (Coverage, Score, Min-Score) lexicographically'"
+          >
+            Rank
+            <i
+              :class="currentSort === 'idx' ? class_sorted : 'fas fa-sort dim'"
+            ></i>
+          </th>
+          <th
+            id="trs_l_start" @click="sort('trs_l_start')"
+            title="TRS-L range"
+          >
             TRS-L
             <i
               :class="
@@ -31,7 +41,10 @@
             ></i>
           </th>
 
-          <th id="compact" @click="sort('compact')">
+          <th 
+            id="compact" @click="sort('compact')"
+            title="Genome coveraged by identified ORFs"
+          >
             Coverage
             <i
               :class="
@@ -40,7 +53,10 @@
             ></i>
           </th>
 
-          <th v-if="is_corsid_a" id="weight" @click="sort('weight')">
+          <th
+            v-if="is_corsid_a" id="weight" @click="sort('weight')"
+            title="Total alignment score"
+          >
             Weight
             <i
               :class="
@@ -48,16 +64,22 @@
               "
             ></i>
           </th>
-          <th v-else id="score" @click="sort('score')">
+          <th
+            v-else id="score" @click="sort('score')"
+            title="Total alignment score"
+          >
             Score
             <i
               :class="
-                currentSort === 'weight' ? class_sorted : 'fas fa-sort dim'
+                currentSort === 'score' ? class_sorted : 'fas fa-sort dim'
               "
             ></i>
           </th>
 
-          <th v-if="!is_corsid_a" id="min_score" @click="sort('min_score')">
+          <th
+            v-if="!is_corsid_a" id="min_score" @click="sort('min_score')"
+            title="Minimum alignment score of an ORF in the solution"
+          >
             Min Score
             <i
               :class="
@@ -66,8 +88,14 @@
             ></i>
           </th>
 
-          <th id="plot">Plot</th>
-          <th id="compare">Compare</th>
+          <th
+            id="plot"
+            title="Add a solution to the top"
+          >Add</th>
+          <th
+            id="compare"
+            title="Pin a solution below to compare"
+          >Compare</th>
         </tr>
       </thead>
       <tbody>
@@ -75,7 +103,7 @@
           :key="res.idx"
           v-for="res in sortedSummaryData.slice(idxShown, idxShown + 10)"
         >
-          <td>{{ res.idx }}</td>
+          <td>{{ res.pos }}</td>
           <td class="aligned">
             <span
               v-for="(chr, idx) in res.core_seq"
@@ -89,7 +117,7 @@
               >{{ chr }}</span
             >
           </td>
-          <td>{{ res.pos }}</td>
+          <td>{{ res.idx }}</td>
           <td>{{ res.trs_l_start }} - {{ res.trs_l_end }}</td>
 
           <percentage
@@ -109,11 +137,13 @@
                 $emit('add-solution', [res.idx - 1, results[res.idx - 1]])
               "
             >
-              Add
+              <i class="fas fa-plus"></i>
             </button>
           </td>
           <td>
-            <button @click="$emit('show-as-compare', res.idx)">Compare</button>
+            <button @click="$emit('show-as-compare', res.idx)">
+              <i class="fas fa-thumbtack"></i>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -128,15 +158,15 @@
         }}
       </span>
       of <span>{{ summarydata.length }}&ensp;</span>
-      <i class="fas fa-chevron-left" @click="$emit('sub-idx-shown')"></i>
+      <i class="fas fa-chevron-left" @click="sub_idx_shown"></i>
       <input
         type="text"
-        @keyup.enter="$emit('jumpto', this.idxJump)"
+        @keyup.enter="jumpto(parseInt(this.idxJump-1))"
         v-model="idxJump"
-        placeholder="0"
+        placeholder="1"
         style="width: 35px"
       />
-      <i class="fas fa-angle-right" @click="$emit('add-idx-shown')"></i>
+      <i class="fas fa-angle-right" @click="add_idx_shown"></i>
     </div>
   </div>
 </template>
@@ -145,17 +175,20 @@
 import * as d3 from "d3";
 import Percentage from "./Percentage.vue";
 import SlidingWindow from "./SlidingWindow.vue";
+import Slider from "./Slider.vue";
 
 export default {
   components: {
     Percentage,
     SlidingWindow,
+    Slider,
   },
   name: "Summary",
   data() {
     return {
-      idxJump: 0,
-      currentSort: "idx",
+      idxShown: 0,
+      idxJump: 1,
+      currentSort: "pos",
       currentSortDir: "asc",
     };
   },
@@ -164,7 +197,6 @@ export default {
     sequence: String,
     results: Array,
     summarydata: Array,
-    idxShown: Number,
     is_corsid_a: Boolean,
     leader_end: Number,
   },
@@ -177,6 +209,53 @@ export default {
         this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
       }
       this.currentSort = s;
+    },
+    add(pos) {
+      console.log(pos);
+      var res = this.sortedSummaryData.filter((d) => d.pos === pos);
+      console.log(res);
+      if (res.length === 0) {
+        console.log("no such records");
+        return;
+      }
+      this.$emit("add-solution", [
+        res[0].idx - 1,
+        this.results[res[0].idx - 1],
+      ]);
+    },
+    add_idx_shown() {
+      if (this.idxShown < this.results.length-10) {
+        this.idxShown += 10;
+      }
+    },
+    sub_idx_shown() {
+      if (this.idxShown >= 10) {
+        this.idxShown -= 10;
+      } else {
+        this.idxShown -= this.idxShown;
+      }
+    },
+    jump(pos) {
+      var idx = this.sortedSummaryData.findIndex((d) => d.pos == pos);
+      if (idx == -1) {
+        console.log("no such records");
+        this.message = "There are no records with position " + pos + ".";
+        return;
+      } else {
+        this.message = "";
+        this.jumpto(idx);
+      }
+    },
+    jumpto(n) {
+      if (isNaN(n)){
+          alert("please enter a number");
+          return;
+      }
+      if (n < 0 || n >= this.results.length){
+          alert("index out of range");
+          return;
+      }
+      this.idxShown = n;
     },
   },
   computed: {

@@ -5,15 +5,11 @@
       :results="json.results"
       :sequence="json.sequence"
       :summarydata="summary_data"
-      :idxShown="idxShown"
       :is_corsid_a="json.is_corsid_a"
       :leader_end="json.ORF1ab[0]"
       @load-data="load_data($event)"
       @add-solution="add_solution($event)"
       @show-as-compare="show_as_compare($event)"
-      @add-idx-shown="add_idx_shown"
-      @sub-idx-shown="sub_idx_shown"
-      @jumpto="jumpto"
       ref="Summary"
     />
 
@@ -56,7 +52,6 @@ import Comparison from './Comparison.vue'
 export default {
   name: 'Viz',
   data: () => ({
-    idxShown: 0,
     staticIdx: 0,
     header: ["ORF", "Score", "Core start", "Core end", "Core len", "ORF start", "ORF end", "ORF len"],
     json: {
@@ -462,25 +457,6 @@ export default {
       }.bind(this);
 
       fr.readAsText(json_file.item(0));
-    },
-    add_idx_shown() {
-      if (this.idxShown < this.json.results.length-10)
-        this.idxShown += 10;
-    },
-    sub_idx_shown() {
-      if (this.idxShown >= 10)
-        this.idxShown -= 10;
-    },
-    jumpto(n) {
-      if (isNaN(n)){
-          alert("please enter a number");
-          return;
-      }
-      if (n < 1 || n > Math.ceil(this.json.results.length/10)){
-          alert("index out of range");
-          return;
-      }
-      this.idxShown = (n-1)*10;
     },
   },
   computed: {

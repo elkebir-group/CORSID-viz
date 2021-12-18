@@ -299,28 +299,9 @@ export default {
             .tickFormat(d => (d + this.offset + 1))
         );
     },
-    sequence() {
-      d3.select(this.$refs.heatmap_x_axis).call(
-        d3.axisBottom(this.heatmap_x_scale)
-          .tickFormat(d => (d + 1))
-          .tickValues(this.heatmap_x_scale.domain().filter((_, i) => !(i % 50)))
-      );
-
-      var brush = d3.brushX()
-        .extent([
-                  [-this.heatmap_x_scale(7), 0],
-                  [this.width+this.heatmap_x_scale(7), this.h_heatmap - this.margin.bottom]])
-        .on("brush", this.brushed);
-
-      var gBrush = d3.selectAll("#heatmap").append("g")
-        .attr("id", "heatmap-brush")
-        .call(brush)
-        .call(brush.move, [this.heatmap_x_scale(0), this.heatmap_x_scale(this.focus_len)]);
-      d3.selectAll('#heatmap-brush>.handle').remove();
-      d3.selectAll('#heatmap-brush>.overlay').remove();
-    },
   },
   mounted() {
+    // plot ticks
     d3.select(this.$refs.logo_x_axis)
       .call(
         d3.axisBottom(this.logo_x_scale)
@@ -328,8 +309,22 @@ export default {
       );
     d3.select(this.$refs.heatmap_x_axis).call(
       d3.axisBottom(this.heatmap_x_scale)
+        .tickFormat(d => (d + 1))
         .tickValues(this.heatmap_x_scale.domain().filter((_, i) => !(i % 50)))
     );
+    // make brush
+    var brush = d3.brushX()
+      .extent([
+                [-this.heatmap_x_scale(7), 0],
+                [this.width+this.heatmap_x_scale(7), this.h_heatmap - this.margin.bottom]])
+      .on("brush", this.brushed);
+
+    var gBrush = d3.selectAll("#heatmap").append("g")
+      .attr("id", "heatmap-brush")
+      .call(brush)
+      .call(brush.move, [this.heatmap_x_scale(0), this.heatmap_x_scale(this.focus_len)]);
+    d3.selectAll('#heatmap-brush>.handle').remove();
+    d3.selectAll('#heatmap-brush>.overlay').remove();
   },
 };
 </script>

@@ -10,6 +10,7 @@
       @load-data="load_data($event)"
       @add-solution="add_solution($event)"
       @show-as-compare="show_as_compare($event)"
+      @no-solution="($event) => {alert_message = `No solution for window ${$event}`}"
       ref="Summary"
     />
 
@@ -41,6 +42,8 @@
       @move-up="move_up($event)"
       @move-down="move_down($event)"
     />
+
+    <Alert :message="alert_message" :style="'warning'"/>
   </div>
 </template>
 
@@ -48,6 +51,7 @@
 import Summary from './Summary.vue'
 import Solution from './Solution.vue'
 import Comparison from './Comparison.vue'
+import Alert from './Alert.vue'
 
 export default {
   name: 'Viz',
@@ -355,7 +359,8 @@ export default {
         "ORF1ab": [],
         "sequence": "ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTG"
     },
-    solutions_shown: []
+    solutions_shown: [],
+    alert_message: "",
   }),
   created() {
     if (this.$route.params["data_url"]){
@@ -533,7 +538,8 @@ export default {
   components: {
     Summary,
     Solution,
-    Comparison
+    Comparison,
+    Alert
   }
 }
 </script>

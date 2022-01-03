@@ -239,6 +239,7 @@ export default {
       var idx = this.sortedSummaryData.findIndex((d) => d.pos == pos);
       if (idx == -1) {
         console.log("no such records");
+        this.$emit("no-solution", pos);
         this.message = "There are no records with position " + pos + ".";
         return;
       } else {

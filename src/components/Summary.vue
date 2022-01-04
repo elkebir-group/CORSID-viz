@@ -148,25 +148,33 @@
         </tr>
       </tbody>
     </table>
-    <br />
-    <div id="paging">
-      Showing <span> {{ idxShown + 1 }} </span>-<span>
-        {{
-          idxShown + 10 > summarydata.length
-            ? summarydata.length
-            : idxShown + 10
-        }}
-      </span>
-      of <span>{{ summarydata.length }}&ensp;</span>
-      <i class="fas fa-chevron-left" @click="sub_idx_shown"></i>
-      <input
-        type="text"
-        @keyup.enter="jumpto(parseInt(this.idxJump-1))"
-        v-model="idxJump"
-        placeholder="1"
-        style="width: 35px"
-      />
-      <i class="fas fa-angle-right" @click="add_idx_shown"></i>
+
+    <div class="paging">
+      <div class="label">
+        {{ `Showing ${idxShown + 1} -
+          ${ idxShown + 10 > summarydata.length ? summarydata.length : idxShown + 10 }
+          of ${summarydata.length}` }}
+      </div>
+      <div class="paging-group">
+        <div class="button" @click="jumpto(0)">
+          <i class="fas fa-angle-double-left"></i>
+        </div>
+        <div class="button" @click="sub_idx_shown">
+          <i class="fas fa-angle-left"></i>
+        </div>
+        <input
+          type="text"
+          @keyup.enter="jumpto(parseInt(this.idxJump-1))"
+          v-model="idxJump"
+          placeholder="position"
+        />
+        <div class="button" @click="add_idx_shown">
+          <i class="fas fa-angle-right"></i>
+        </div>
+        <div class="button" @click="jumpto(summarydata.length - 10)">
+          <i class="fas fa-angle-double-right"></i>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -289,16 +297,55 @@ export default {
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3),
     0 0 1px 1px rgba(0, 0, 0, 0.05);
 }
-#paging {
-  text-align: right;
-}
 td {
   z-index: 10;
 }
 .dim {
   color: #ccc;
 }
-input {
-  margin-bottom: 1em;
+.paging {
+  margin-top: 0.3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.8em;
+}
+.paging .label {
+  text-align: center;
+  min-width: 12em;
+}
+.paging-group {
+  display: flex;
+  align-items: center;
+  column-gap: 0.2em;
+}
+.paging-group .button {
+  font-size: 1em;
+  border: 1px solid #13294B;
+  border-radius: 0.2em;
+  padding: 0.1em 0.15em;
+}
+.paging-group .button:hover {
+  border-color: #80bdff;
+  box-shadow: 0 0 0.1em 0.1em rgba(0, 123, 255, 25%);
+}
+.paging-group input {
+  font-size: 1em;
+  border: 1px solid #13294B;
+  border-radius: 0.2em;
+  padding: 0.15em 0.15em 0.05em 0.15em;
+  text-align: center;
+  width: 3em;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+textarea:focus, input:focus{
+  outline: none;
+}
+.paging-group input:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2em rgba(0, 123, 255, 25%);
+}
+:focus:not(:focus-visible) {
+  outline: 0;
 }
 </style>

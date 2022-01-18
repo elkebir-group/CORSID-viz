@@ -264,6 +264,9 @@ tr {
   line-height: 1.2em;
 }
 
+td.modify-ORF {
+  cursor: pointer;
+}
 textarea:focus, input:focus{
   outline: none;
 }

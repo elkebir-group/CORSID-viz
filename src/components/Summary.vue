@@ -6,6 +6,7 @@
 
     <Slider
       :sequence="sequence.slice(0, leader_end)"
+      :default_pos="sortedSummaryData[0].pos"
       @add="add"
       @jump="jump"
     />
@@ -196,7 +197,7 @@ export default {
     return {
       idxShown: 0,
       idxJump: 1,
-      currentSort: "pos",
+      currentSort: "idx",
       currentSortDir: "asc",
     };
   },

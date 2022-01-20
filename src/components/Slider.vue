@@ -102,6 +102,7 @@ export default {
   }),
   props: {
     sequence: String,
+    default_pos: Number,
   },
   methods: {
     get_bbox(c) {
@@ -316,7 +317,8 @@ export default {
       var gBrush = d3.selectAll("#heatmap").append("g")
         .attr("id", "heatmap-brush")
         .call(brush)
-        .call(brush.move, [this.heatmap_x_scale(0), this.heatmap_x_scale(this.focus_len)]);
+        .call(brush.move, [this.heatmap_x_scale(this.default_pos-8), this.heatmap_x_scale(this.default_pos-8+this.focus_len)]);
+      this.offset = this.default_pos-8;
       d3.selectAll('#heatmap-brush>.handle').remove();
       d3.selectAll('#heatmap-brush>.overlay').remove();
     }

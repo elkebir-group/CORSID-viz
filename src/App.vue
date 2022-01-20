@@ -2,8 +2,9 @@
 <div id="app">
     <div class="topnav">
       <!-- <router-link to="/">Home</router-link> -->
-      <router-link to="/demo">Demo</router-link>
+      <router-link to="/demo">Home</router-link>
       <!-- <router-link to="/viz">Visualization</router-link> -->
+      <a href="https://github.com/elkebir-group/CORSID-viz/wiki/How-To-Use" target="_blank">Help</a>
     </div>
   <!-- route outlet -->
   <!-- component matched by the route will render here -->

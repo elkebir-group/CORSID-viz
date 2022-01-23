@@ -80,20 +80,27 @@
         </tr>
       </thead>
       <tbody>
-        <tr :key="row.ORF_start" v-for="(row,idx) in reverse_bodys">
+        <tr
+          v-for="(row,idx) in reverse_bodys"
+          :key="row.ORF_start"
+        >
           <td>{{ row.check }}
             <input type="checkbox" :id="`ORF-${idx}`" :value="idx" v-model="selectedIDX" >
             <label :for="`ORF-${idx}`"> </label><br>
           </td>
-          <!-- <td>{{ row.ORF }}</td> -->
-          <td><input
-            v-model="row.ORF" 
-            type="text" 
-            name="ORF" 
-            :placeholder=row.ORF 
-            size="1" 
-            @change="$emit('write-to-json', [this.res[0], idx, row.ORF, row.ORF_start])"></td>
-          <!-- <td v-else>{{row.ORF}}</td> -->
+          <td @dblclick="modify_ORF(idx, $event)" class="modify-ORF">
+            <span v-if="!is_editing[idx]">{{ row.ORF }}</span>
+            <input
+              v-else
+              v-model="row.ORF"
+              type="text"
+              name="ORF"
+              class="modify-ORF"
+              :placeholder="row.ORF"
+              size="1"
+              @change="$emit('write-to-json', [this.res[0], idx, row.ORF, row.ORF_start])"
+              @blur="is_editing[idx] = false">
+          </td>
           <td>{{ row.score }}</td>
           <td>{{ row.core_start !== null ? row.core_start + 1 : "" }}</td>
           <td>{{ row.core_start !== null ? row.core_start + row.core_len + 1 : "" }}</td>
@@ -130,11 +137,14 @@ export default {
     box: Object,
     full_sequence: String,
   },
-  data: () => ({
-    is_show_plot: true,
-    is_checkall: false,
-    selectedIDX: [],
-  }),
+  data() {
+    return {
+      is_show_plot: true,
+      is_checkall: false,
+      is_editing: Array(this.reverse_bodys.length).fill(false),
+      selectedIDX: [],
+    }
+  },
   methods: {
     check_all() {
       if (this.is_checkall) {
@@ -142,6 +152,12 @@ export default {
       } else {
         this.selectedIDX = []
       }
+    },
+    modify_ORF(idx, event) {
+      this.is_editing[idx] = true;
+      this.$nextTick(() => {
+        event.currentTarget.firstElementChild.focus();
+      })
     },
     percentage(num) {
       return parseFloat(num).toFixed(2)+"%"
@@ -242,5 +258,30 @@ dd {
   position: absolute;
   top:10px;
   right:20px;
+}
+
+tr {
+  line-height: 1.2em;
+}
+
+td.modify-ORF {
+  cursor: pointer;
+}
+textarea:focus, input:focus{
+  outline: none;
+}
+input.modify-ORF {
+  font-size: 1em;
+  border: 1px solid #13294B;
+  border-radius: 0.2em;
+  padding: 0em 0.15em 0em 0.15em;
+  text-align: center;
+  width: 100%;
+  height: auto;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+input.modify-ORF:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2em rgba(0, 123, 255, 25%);
 }
 </style>

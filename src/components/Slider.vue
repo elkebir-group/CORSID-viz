@@ -102,6 +102,7 @@ export default {
   }),
   props: {
     sequence: String,
+    default_pos: Number,
   },
   methods: {
     get_bbox(c) {
@@ -299,6 +300,28 @@ export default {
             .tickFormat(d => (d + this.offset + 1))
         );
     },
+    heatmap_x_scale() {
+      // plot ticks
+      d3.select(this.$refs.heatmap_x_axis).call(
+        d3.axisBottom(this.heatmap_x_scale)
+          .tickFormat(d => (d + 1))
+          .tickValues(this.heatmap_x_scale.domain().filter((_, i) => !(i % 50)))
+      );
+      // make brush
+      var brush = d3.brushX()
+        .extent([
+                  [-this.heatmap_x_scale(7), 0],
+                  [this.width+this.heatmap_x_scale(7), this.h_heatmap - this.margin.bottom]])
+        .on("brush", this.brushed);
+
+      var gBrush = d3.selectAll("#heatmap").append("g")
+        .attr("id", "heatmap-brush")
+        .call(brush)
+        .call(brush.move, [this.heatmap_x_scale(this.default_pos-8), this.heatmap_x_scale(this.default_pos-8+this.focus_len)]);
+      this.offset = this.default_pos-8;
+      d3.selectAll('#heatmap-brush>.handle').remove();
+      d3.selectAll('#heatmap-brush>.overlay').remove();
+    }
   },
   mounted() {
     // plot ticks
@@ -307,24 +330,6 @@ export default {
         d3.axisBottom(this.logo_x_scale)
           .tickFormat(d => (d + this.offset + 1))
       );
-    d3.select(this.$refs.heatmap_x_axis).call(
-      d3.axisBottom(this.heatmap_x_scale)
-        .tickFormat(d => (d + 1))
-        .tickValues(this.heatmap_x_scale.domain().filter((_, i) => !(i % 50)))
-    );
-    // make brush
-    var brush = d3.brushX()
-      .extent([
-                [-this.heatmap_x_scale(7), 0],
-                [this.width+this.heatmap_x_scale(7), this.h_heatmap - this.margin.bottom]])
-      .on("brush", this.brushed);
-
-    var gBrush = d3.selectAll("#heatmap").append("g")
-      .attr("id", "heatmap-brush")
-      .call(brush)
-      .call(brush.move, [this.heatmap_x_scale(0), this.heatmap_x_scale(this.focus_len)]);
-    d3.selectAll('#heatmap-brush>.handle').remove();
-    d3.selectAll('#heatmap-brush>.overlay').remove();
   },
 };
 </script>

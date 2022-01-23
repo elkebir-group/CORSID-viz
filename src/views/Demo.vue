@@ -17,15 +17,18 @@
         <option value="Deltacoronavirus">Deltacoronavirus</option>
       </select>
     </div>
-    <div class="form-group">
+    <div class="form-group tooltip">
       <label> Subgenus: </label>
-      <select v-model="subgenus_search" :disabled="genus_search == ''">
+      <select
+        v-model="subgenus_search"
+        :disabled="genus_search == ''">
         <option value=""></option>
         <option :key="idx" v-for="subgenus, idx in subgenuses_for_genus" v-bind:value="subgenus"> {{subgenus}} </option>
       </select>
+      <span class="tooltip-text" v-if="genus_search == ''">Select a genus first</span>
     </div>
     <div class="form-group">
-      <div @click='reset' class="button">
+      <div @click='reset' class="button" title="Clear">
         <i class="fas fa-undo-alt"></i>
       </div>
     </div>
@@ -59,6 +62,7 @@
             class="button"
             target="_blank"
             rel="noopener noreferrer"
+            title="Open in new page"
             :href="`#/viz/${encodeURIComponent(res.corsid_url)}`">
             <i class="fas fa-external-link-alt">
             </i>
@@ -69,6 +73,7 @@
             class="button"
             target="_blank"
             rel="noopener noreferrer"
+            title="Open in new page"
             :href="`#/viz/${encodeURIComponent(res.corsid_a_url)}`">
             <i class="fas fa-external-link-alt">
             </i>
@@ -182,7 +187,9 @@ div.search-wrapper {
   border: 1pt solid #ddd;
   margin: 1em 0 1em 0;
   border-radius: 1em;
-  overflow: auto;
+  overflow: visible;
+  width:fit-content;
+  height:fit-content;
   padding: 1em;
   /* box-shadow: 0px 0px 10px 5px #ddd; */
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -201,10 +208,6 @@ p {
   margin-left: 10%;
   width: 80%;
   text-align: center;
-}
-.search-wrapper {
-  width:fit-content;
-  height:fit-content;
 }
 .button {
   text-decoration: none;
@@ -230,5 +233,50 @@ p {
 .button:hover {
   background-color: #d1d1d1;
   border-color: #555555;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltip-text {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 0.3em;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  top: 125%;
+  left: 50%;
+  margin-left: -50%;
+  padding: 0.3em 0.5em;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 </style>

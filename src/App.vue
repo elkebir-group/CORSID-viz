@@ -2,8 +2,9 @@
 <div id="app">
     <div class="topnav">
       <!-- <router-link to="/">Home</router-link> -->
-      <router-link to="/demo">Demo</router-link>
+      <router-link to="/demo">Home</router-link>
       <!-- <router-link to="/viz">Visualization</router-link> -->
+      <a href="https://github.com/elkebir-group/CORSID-viz/wiki/How-To-Use" target="_blank">Help</a>
     </div>
   <!-- route outlet -->
   <!-- component matched by the route will render here -->
@@ -61,6 +62,11 @@ body {
   fill: #ffa500;
 }
 
+table, tr, td {
+  border-collapse:collapse;
+  border: none;
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -68,11 +74,11 @@ table {
 }
 
 table tr:hover {
-  background-color: rgba(224, 224, 224, 0.5) !important;
+  background-color: rgba(207, 207, 207, 0.705) !important;
 }
 
 td, th {
-  border-bottom: 1px solid #ccc;
+  /* border-bottom: 1px solid #ccc; */
   text-align: center;
   padding: 0 8px 0 8px;
 }
@@ -88,7 +94,7 @@ tbody:last-child {
 }
 
 tr:nth-child(even) {
-  background-color: #f8f8f8;
+  background-color: #f0f0f0;
   z-index: -10;
 }
 

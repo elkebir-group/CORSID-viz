@@ -1,5 +1,9 @@
 # CORSID-viz
 
+This is the visualization tool for [CORSID](https://github.com/elkebir-group/CORSID).
+Click [here](https://elkebir-group.github.io/CORSID-viz/) to check the website of 468 genomes stored in [CORSID-data](https://github.com/elkebir-group/CORSID-data).
+CORSID-viz is dockerized in [CORSID-conainer](https://github.com/elkebir-group/CORSID-container)
+
 ## Project setup
 ```
 npm install

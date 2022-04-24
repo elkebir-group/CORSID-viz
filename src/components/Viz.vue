@@ -57,7 +57,7 @@ export default {
   name: 'Viz',
   data: () => ({
     staticIdx: 0,
-    header: ["ORF", "Score", "Core start", "Core end", "Core len", "ORF start", "ORF end", "ORF len"],
+    header: ["ORF", "Score", "TRS start", "TRS end", "TRS len", "ORF start", "ORF end", "ORF len"],
     json: {
         "results": [
           {

@@ -23,6 +23,7 @@
     :intervals="intervals[staticIdx]"
     :sequences="sequences[staticIdx]"
     :box="boxes[staticIdx]"
+    :is_corsid_a="json.is_corsid_a"
     @remove-comparison="remove_comparison()"
     />
 
@@ -37,6 +38,7 @@
       :sequences="sequences[res[0]]"
       :box="boxes[res[0]]"
       :full_sequence="json.sequence"
+      :is_corsid_a="json.is_corsid_a"
       @write-to-json="write_to_json($event)"
       @remove-solution="remove_solution($event)"
       @move-up="move_up($event)"
@@ -60,152 +62,7 @@ export default {
     header: ["ORF", "Score", "TRS start", "TRS end", "TRS len", "ORF start", "ORF end", "ORF len"],
     json: {
         "results": [
-          {
-            "leader_core_start": 70,
-            "leader_core_len": 7,
-            "leader_core_seq": "CGAACTT",
-            "TRS_L_start": 64,
-            "TRS_L_len": 19,
-            "body_range_start": 21352,
-            "body_range_len": 8551,
-            "n_intervals": 7,
-            "weight": 7518.064,
-            "compact": 0.11998596655361946,
-            "bodys": [
-                {
-                    "ORF": "N",
-                    "interval_start": 28273,
-                    "interval_len": 1258,
-                    "weight": 1257.007,
-                    "core_start": 28254,
-                    "core_len": 13,
-                    "leader_start": 64,
-                    "leader_end": 76,
-                    "ORF_start": 28273,
-                    "ORF_len": 1257,
-                    "score": 7,
-                    "index": 29,
-                    "align": "TCTAAACGAACAA------"
-                },
-                {
-                    "ORF": "8",
-                    "interval_start": 27893,
-                    "interval_len": 364,
-                    "weight": 363.01,
-                    "core_start": 27883,
-                    "core_len": 16,
-                    "leader_start": 65,
-                    "leader_end": 80,
-                    "ORF_start": 27893,
-                    "ORF_len": 363,
-                    "score": 10,
-                    "index": 25,
-                    "align": "-CTAAACGAACATGAAA--"
-                },
-                {
-                    "ORF": "7a",
-                    "interval_start": 27393,
-                    "interval_len": 364,
-                    "weight": 363.011,
-                    "core_start": 27384,
-                    "core_len": 17,
-                    "leader_start": 66,
-                    "leader_end": 82,
-                    "ORF_start": 27393,
-                    "ORF_len": 363,
-                    "score": 11,
-                    "index": 17,
-                    "align": "--TAAACGAACATGAAAAT"
-                },
-                {
-                    "ORF": "M",
-                    "interval_start": 26522,
-                    "interval_len": 667,
-                    "weight": 666.01,
-                    "core_start": 26467,
-                    "core_len": 13,
-                    "leader_start": 64,
-                    "leader_end": 76,
-                    "ORF_start": 26522,
-                    "ORF_len": 666,
-                    "score": 10,
-                    "index": 5,
-                    "align": "TCTAAACGAACTA------"
-                },
-                {
-                    "ORF": "E",
-                    "interval_start": 26244,
-                    "interval_len": 226,
-                    "weight": 225.008,
-                    "core_start": 26236,
-                    "core_len": 8,
-                    "leader_start": 69,
-                    "leader_end": 76,
-                    "ORF_start": 26244,
-                    "ORF_len": 225,
-                    "score": 8,
-                    "index": 4,
-                    "align": "-----ACGAACTT------"
-                },
-                {
-                    "ORF": "3a",
-                    "interval_start": 25392,
-                    "interval_len": 826,
-                    "weight": 825.011,
-                    "core_start": 25381,
-                    "core_len": 11,
-                    "leader_start": 66,
-                    "leader_end": 76,
-                    "ORF_start": 25392,
-                    "ORF_len": 825,
-                    "score": 11,
-                    "index": 1,
-                    "align": "--TAAACGAACTT------"
-                },
-                {
-                    "ORF": "S",
-                    "interval_start": 21562,
-                    "interval_len": 3820,
-                    "weight": 3819.007,
-                    "core_start": 21551,
-                    "core_len": 13,
-                    "leader_start": 65,
-                    "leader_end": 77,
-                    "ORF_start": 21562,
-                    "ORF_len": 3819,
-                    "score": 7,
-                    "index": 0,
-                    "align": "-CTAAACGAACAAT-----"
-                }
-            ],
-            "total_ORF": [
-                "8",
-                "7a",
-                "7b",
-                "M",
-                "3a",
-                "10",
-                "N",
-                "E",
-                "S",
-                "6"
-            ],
-            "recall_ORF": [
-                "8",
-                "7a",
-                "M",
-                "3a",
-                "N",
-                "E",
-                "S"
-            ],
-            "missing_ORF": [
-                "10",
-                "7b",
-                "6"
-            ],
-            "TRS_L_seq": "TCTAAACGAACTTTAAAAT"
-        },
+          {"leader_core_start": 153, "leader_core_len": 7, "leader_core_seq": "ATATTTT", "TRS_L_start": 150, "TRS_L_len": 17, "body_range_start": 21516, "body_range_len": 8659, "n_intervals": 7, "weight": 7455.032999999999, "compact": 0.13962351310774918, "bodys": [{"ORF": "N", "interval_start": 28642, "interval_len": 1146, "weight": 1272.004, "core_start": 28544, "core_len": 7, "leader_start": 153, "leader_end": 159, "ORF_start": 28579, "ORF_len": 1272, "score": 4, "index": 42, "align": "---ATATTAT-------"}, {"ORF": "", "interval_start": 28017, "interval_len": 479, "weight": 531.005, "core_start": 27944, "core_len": 11, "leader_start": 150, "leader_end": 160, "ORF_start": 27991, "ORF_len": 531, "score": 5, "index": 35, "align": "TTCTTATTATT------"}, {"ORF": "E", "interval_start": 27617, "interval_len": 222, "weight": 246.006, "core_start": 27519, "core_len": 9, "leader_start": 151, "leader_end": 159, "ORF_start": 27605, "ORF_len": 246, "score": 6, "index": 33, "align": "-TCATTTTTT-------"}, {"ORF": "", "interval_start": 27218, "interval_len": 295, "weight": 327.005, "core_start": 27080, "core_len": 8, "leader_start": 153, "leader_end": 160, "ORF_start": 27202, "ORF_len": 327, "score": 5, "index": 32, "align": "---ATAATTTT------"}, {"ORF": "4b", "interval_start": 26182, "interval_len": 603, "weight": 669.002, "core_start": 26003, "core_len": 8, "leader_start": 153, "leader_end": 160, "ORF_start": 26149, "ORF_len": 669, "score": 2, "index": 27, "align": "---GTATTCTT------"}, {"ORF": "3b", "interval_start": 25761, "interval_len": 379, "weight": 420.004, "core_start": 25711, "core_len": 7, "leader_start": 153, "leader_end": 159, "ORF_start": 25740, "ORF_len": 420, "score": 4, "index": 24, "align": "---ATCTTTT-------"}, {"ORF": "S", "interval_start": 21835, "interval_len": 3592, "weight": 3990.007, "core_start": 21553, "core_len": 16, "leader_start": 151, "leader_end": 166, "ORF_start": 21636, "ORF_len": 3990, "score": 7, "index": 3, "align": "-TCCTATTTTACAATTA"}], "total_ORF": ["E", "N", "4b", "4a", "5", "3b", "M", "8b", "S", "3a"], "recall_ORF": ["E", "N", "4b", "3b", "S"], "missing_ORF": ["5", "4a", "M", "8b", "3a"], "TRS_L_seq": "TTCATATTTTTCATTTA"},
         {
             "leader_core_start": 69,
             "leader_core_len": 7,

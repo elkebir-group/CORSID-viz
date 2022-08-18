@@ -1,7 +1,7 @@
 <template>
   <div class="solution">
     <div style="width: 20%; float:left">
-      <dt>#{{ res[0] + 1 }}</dt> 
+      <dt style="font-weight: bold">#{{ res[0] + 1 }}</dt> 
       <br/>
       <dt>Sample</dt> <dd>{{ name }}</dd>
       <dt>Core sequence</dt> <dd>
@@ -15,12 +15,17 @@
       </dd>
       <dt>Position</dt> <dd>{{ res[1].leader_core_start + 1 }}</dd>
       <dt>TRS-L</dt> <dd>{{ res[1].TRS_L_start + 1 }} - {{ res[1].TRS_L_start + res[1].TRS_L_len + 1 }}</dd>
-      <dt>Weight</dt> <dd>{{ res[1].weight }}</dd>
-      <template v-if="!res[1].compact">
-        <dt>Compactness</dt>
+      <template v-if="is_corsid_a">
+        <dt>Weight</dt>
+        <dd>{{ res[1].weight }}</dd>
+      </template>
+      <template v-else>
+        <dt>Genome coverage</dt>
         <dd>
-          {{ percentage(res[1].compact) }}
+          {{ percentage(((1.0-res[1].compact)*100)) }}
         </dd>
+        <dt>Total Score</dt>
+        <dd>{{ res[1].bodys.reduce((a, b) => +a + (+b.score || 0), 0) }}</dd>
       </template>
 
       <dt>#ORFs</dt> <dd>{{ res[1].n_intervals }}</dd>
@@ -136,6 +141,7 @@ export default {
     sequences: Array,
     box: Object,
     full_sequence: String,
+    is_corsid_a: Boolean,
   },
   data() {
     return {

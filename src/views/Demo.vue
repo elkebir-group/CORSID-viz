@@ -32,6 +32,16 @@
         <i class="fas fa-undo-alt"></i>
       </div>
     </div>
+    <a
+      class="button button-green"
+      style="margin-left: auto"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Open in new page"
+      href="#/viz/">
+      <i class="fas fa-cloud-arrow-up"></i>
+      Upload your JSON result
+    </a>
   </div>
   <table>
     <thead>
@@ -114,6 +124,26 @@ export default {
       this.subgenus_search = ''
       this.subgenuses = []
     },
+    onFileChange(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (files.length != 1) {
+        console.log("Did not receive single file");
+        return;
+      }
+      this.readFile(files[0]);
+    },
+    readFile(file) {
+      let reader = new FileReader();
+      reader.onload = e => {
+        // console.log(e.target.result);
+        try {
+          this.json = JSON.parse(e.target.result);
+        } catch (e) {
+          alert(e);
+        }
+      };
+      reader.readAsText(file);
+    }
   },
   computed: {
     subgenuses_for_genus() {
@@ -193,10 +223,10 @@ div.search-wrapper {
   padding: 1em;
   /* box-shadow: 0px 0px 10px 5px #ddd; */
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
-}
-div.form-group {
-  display: inline-block;
-  margin-left: 0.5em;
+  display: flex;
+  column-gap: 0.5em;
+  justify-content: space-between;
+  width: auto;
 }
 .dim {
   color: #ccc;
@@ -233,6 +263,16 @@ p {
 .button:hover {
   background-color: #d1d1d1;
   border-color: #555555;
+}
+.button-green {
+  color: #fff;
+  background-color: #04AA6D;
+  border-color: #04AA6D;
+}
+.button-green:hover {
+  color: #fff;
+  background-color: #157347;
+  border-color: #146c43;
 }
 
 .tooltip {

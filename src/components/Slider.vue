@@ -314,6 +314,7 @@ export default {
                   [this.width+this.heatmap_x_scale(7), this.h_heatmap - this.margin.bottom]])
         .on("brush", this.brushed);
 
+      d3.select("#heatmap-brush").remove();
       var gBrush = d3.selectAll("#heatmap").append("g")
         .attr("id", "heatmap-brush")
         .call(brush)

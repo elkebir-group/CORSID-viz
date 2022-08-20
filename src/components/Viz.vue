@@ -2,7 +2,7 @@
   <div>
     <button
       type="button"
-      class="rounded"
+      class="floating-button"
       title="Upload JSON result"
       @click="show_modal"
     >
@@ -366,7 +366,8 @@ export default {
       } else {
         return false;
       }
-    }
+    },
+    
   },
   computed: {
     boxes() {
@@ -552,5 +553,29 @@ export default {
   color: #fff;
   background-color: #157347;
   border-color: #146c43;
+}
+
+.floating-button{
+  position:fixed;
+  width:60px;
+  height:60px;
+  top:40px;
+  right:40px;
+  background-color:#04AA6D;
+  color:#FFF;
+  border-radius:50px;
+  text-align:center;
+  box-shadow: 3px 2px 7px #0d492d;
+  border-width: 0;
+  font-size: 1.5em;
+  transition: background-color .1s ease-in-out;
+}
+.floating-button:hover {
+  background-color: #157347;
+  transition: background-color .1s ease-in-out;
+}
+
+.my-float{
+  margin-top:22px;
 }
 </style>
